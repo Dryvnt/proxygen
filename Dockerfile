@@ -16,9 +16,6 @@ COPY SharedModel SharedModel
 COPY Test Test
 RUN dotnet publish Proxygen -c Release -o out
 
-WORKDIR /app/Cli
-RUN dotnet run -- --input-file ./oracle-cards.json
-
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
 COPY --from=build-env /app/out .
