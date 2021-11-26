@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,11 +27,13 @@ namespace Cli
             "double_sided",
         };
 
-        public static async Task<ICollection<Card>> ReadData(Stream input)
+        public static async Task<ICollection<JsonCard>> ReadJson(Stream input)
         {
-            var jsonCards = await JsonSerializer.DeserializeAsync<List<JsonCard>>(input) ??
+            return await JsonSerializer.DeserializeAsync<List<JsonCard>>(input) ??
                             throw new NotImplementedException();
-
+        }
+        public static async Task<ICollection<Card>> ReadData(ICollection<JsonCard> jsonCards)
+        {
             var unknownLayouts = jsonCards.Select(c => c.Layout).Distinct().Where(l => !KnownLayouts.Contains(l));
             foreach (var unknown in unknownLayouts) Console.WriteLine($"WARNING - UNKNOWN LAYOUT '{unknown}");
             var filteredCards = jsonCards.Where(c => LayoutWhitelist.Contains(c.Layout)).ToList();
@@ -72,13 +75,23 @@ namespace Cli
         ///     Simple tool for importing an oracle json dump from Scryfall into the database
         /// </summary>
         /// <param name="inputFile">File to read JSON from. If not provided, json will be read from stdin</param>
-        public static async Task Main(FileInfo? inputFile)
+        /// <param name="filterTo">Write the parsed JSON to this file before inserting into DB</param>
+        public static async Task Main(FileInfo? inputFile, FileInfo? filterTo)
         {
             Console.WriteLine("Opening input file");
-            var input = inputFile?.OpenRead() ?? Console.OpenStandardInput();
+            await using var input = inputFile?.OpenRead() ?? Console.OpenStandardInput();
 
-            var cards = await ReadData(input);
-
+            var jsonCards = await ReadJson(input);
+            
+            if (filterTo is not null)
+            {
+                Console.WriteLine("Writing filtered JSON to file");
+                await using var filterOut = filterTo.OpenWrite();
+                await JsonSerializer.SerializeAsync(filterOut, jsonCards);
+            }
+            
+            var cards = await ReadData(jsonCards);
+            
             await using var context = new SqliteCardContext();
             Console.WriteLine("Migrating DB");
             await context.Database.MigrateAsync();
