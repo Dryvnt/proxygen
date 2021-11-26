@@ -1,0 +1,18 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Proxygen";
+}
+
+<div id="surround">
+    <div id="content">
+        <h1>Simple Proxy Generator</h1>
+        <form method="get" asp-page="Display">
+            @Html.TextAreaFor(model => model.Decklist, new { @class = "decklist", name = "decklist" })
+            <button type="submit">Generate Proxy Sheet</button>
+        </form>
+        <p>Powered by <a href="https://scryfall.com">Scryfall</a></p>
+        <p>Source code available at <a href="https://github.com/Dryvnt/proxygen">GitHub</a></p>
+    </div>
+
+</div>

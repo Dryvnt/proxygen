@@ -1,0 +1,107 @@
+@page
+@using SharedModel
+@model Display
+@{
+    Layout = "_DisplayLayout";
+    ViewData["Title"] = "Proxygen";
+}
+
+@functions {
+    private void RenderFace(Face face, string frameClass = "card_inner")
+    {
+        <div class="@frameClass">
+            <div class="name_mana_line">
+                <p class="name">@face.Name</p>
+                @if (face.ManaCost is not null)
+                {
+                    <div class="mana_cost">
+                        @Html.Raw(string.Join("&#8203", face.ManaCostComponents))
+                    </div>;
+                }
+            </div>
+            <p class="type_line">@face.TypeLine</p>
+            @if (face.OracleText is not null)
+            {
+                foreach (var line in face.OracleText.Split("\n"))
+                {
+                    <p class="oracle_p">@line</p>
+                }
+            }
+            @if (face.Power is not null && face.Toughness is not null)
+            {
+                <div class="spacer"></div>
+                <p class="power_toughness">@face.Power/@face.Toughness</p>
+            }
+            @if (face.Loyalty is not null)
+            {
+                <p class="loyalty">@face.Loyalty</p>
+            }
+        </div>
+    }
+
+}
+
+@if (Model.UnrecognizedCards.Any())
+{
+    <div class="card_frame">
+        @{
+            var errorFace = new Face
+            {
+                CardId = Guid.Empty,
+                Name = "Proxygen Error",
+                ManaCost = "{W}{T}{F}",
+                OracleText = string.Join("\n", Model.UnrecognizedCards),
+                TypeLine = "Unrecognized Cards",
+            };
+            RenderFace(errorFace);
+        }
+    </div>
+}
+else
+{
+@foreach (var card in Model.Cards)
+{
+    @switch (card.Layout)
+    {
+        case SharedModel.Layout.Normal:
+        {
+            @foreach (var face in card.Faces)
+            {
+                <div class="card_frame">
+                    @{ RenderFace(face); }
+                </div>
+            }
+            break;
+        }
+        case SharedModel.Layout.Split:
+        {
+            <div class="card_frame">
+                @foreach (var face in card.Faces)
+                {
+                    RenderFace(face, "card_inner split_inner");
+                    if (face != card.Faces.Last())
+                    {
+                        <div class="spacer"></div>
+                        <hr class="flip_divider"/>
+                        <div class="spacer"></div>
+                    }
+                }
+            </div>
+            break;
+        }
+        case SharedModel.Layout.Flip:
+        {
+            <div class="card_frame">
+                @{ RenderFace(card.Faces[0], "card_inner flip_top"); }
+                <div class="spacer"></div>
+                <hr class="flip_divider"/>
+                <div class="spacer"></div>
+                @{ RenderFace(card.Faces[1], "card_inner flip_bottom"); }
+            </div>
+            break;
+        }
+        default:
+            throw new ArgumentOutOfRangeException();
+    }
+}
+}

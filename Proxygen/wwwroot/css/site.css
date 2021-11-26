@@ -1,0 +1,44 @@
+﻿* {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    margin-bottom: 1em;
+    padding: 0;
+    border: 0;
+}
+
+p {
+    font-size: 0.7em;
+}
+
+textarea {
+    font-family: monospace;
+    text-align: left;
+    border: 1px solid black;
+    display: block;
+    font-size: 1em;
+    resize: none;
+}
+
+#surround {
+    margin: 0.5em;
+    text-align: center;
+}
+
+#content {
+    text-align: center;
+    margin: 0 auto;
+    width: 25em;
+}
+
+button[type="submit"] {
+    padding: 0.5em;
+    font-size: 2em;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.decklist {
+    width: 100%;
+    height: 20em;
+}

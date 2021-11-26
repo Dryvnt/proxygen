@@ -1,0 +1,99 @@
+@page {
+    margin: 10mm;
+    size: A4;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+p {
+    margin-top: 0mm;
+    margin-bottom: 1mm;
+}
+
+.card_frame {
+    /* size of magic card is 63mm x 88mm
+       proxy size is 60mm x 85mm
+       0.5mm border included in this size
+     */
+    width: 60mm;
+    height: 85mm;
+    padding: 2mm;
+    border: 0.5mm solid black;
+    float: left;
+    page-break-inside: avoid;
+    overflow: hidden;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 3.3mm;
+    line-height: 100%;
+    text-rendering: geometricPrecision;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.card_inner {
+    flex-grow: 1;
+    display: flex;
+    flex-flow: column nowrap;
+    max-height: 100%;
+    min-height: 0;
+}
+
+.spacer {
+    flex-grow: 1;
+}
+
+.flip_bottom {
+    -ms-transform: rotate(180deg); /* IE 9 */
+    -webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
+    transform: rotate(180deg);
+}
+
+
+.flip_divider {
+    width: 100%;
+}
+
+.name {
+    display: inline-block;
+    vertical-align: text-top;
+    font-weight: bold;
+    float: left;
+    flex-grow: 1;
+}
+
+.mana_cost {
+    display: inline-block;
+    vertical-align: text-top;
+    text-align: right;
+    float: right;
+}
+
+.name_mana_line {
+    flex-basis: 53%;
+    display: flex;
+}
+
+.type_line {
+    font-size: 95%;
+    flex-basis: 3em;
+}
+
+.oracle_p {
+    font-size: 85%;
+}
+
+.power_toughness {
+    text-align: right;
+    margin-top:auto;
+}
+
+.loyalty {
+    text-align: right;
+    margin-top: auto;
+}
