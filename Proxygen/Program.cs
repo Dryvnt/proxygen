@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SharedModel;
@@ -18,6 +19,12 @@ builder.Services.AddDbContext<SqliteCardContext>();
 builder.Services.AddTransient<CardContext, SqliteCardContext>();
 
 var app = builder.Build();
+
+// Ensure DB is migrated
+await using (var cardContext = app.Services.GetRequiredService<CardContext>())
+{
+    await cardContext.Database.MigrateAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
