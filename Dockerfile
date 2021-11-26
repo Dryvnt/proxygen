@@ -3,16 +3,12 @@ WORKDIR /app
 
 COPY *.sln ./
 COPY Proxygen/*.csproj ./Proxygen/
-COPY Parsing/*.csproj ./Parsing/
-COPY SharedModel/*.csproj ./SharedModel/
 COPY Test/*.csproj ./Test/
 COPY Cli/*.csproj ./Cli/
 RUN dotnet restore
 
 COPY Cli Cli
-COPY Parsing Parsing
 COPY Proxygen Proxygen
-COPY SharedModel SharedModel
 COPY Test Test
 RUN dotnet publish Proxygen -c Release -o out
 
