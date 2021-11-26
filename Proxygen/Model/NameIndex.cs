@@ -4,9 +4,9 @@ namespace Proxygen.Model
 {
     public class NameIndex
     {
-        [Key] public string SanitizedName { get; init; }
+        [Key] public string SanitizedName { get; init; } = null!;
 
-        public Card Card { get; init; }
+        public Card Card { get; init; } = null!;
 
         public override string ToString()
         {

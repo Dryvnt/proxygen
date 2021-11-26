@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Proxygen;
 using Xunit;
 
@@ -20,11 +21,11 @@ namespace Test
 
         [Theory]
         [MemberData(nameof(ExampleDecklists))]
-        public void Basic(string decklist, IEnumerable<(string, int)> expected)
+        public async Task Basic(string decklist, IEnumerable<(string, int)> expected)
         {
             var parsedExpected = expected.ToDictionary(p => Parser.Sanitize(p.Item1), p => p.Item2);
 
-            var parsed = Parser.ParseDecklist(decklist);
+            var parsed = await Parser.ParseDecklist(decklist);
 
             Assert.Equal(parsedExpected, parsed);
         }

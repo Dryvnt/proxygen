@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Proxygen.Model;
 
-namespace Cli
+namespace Proxygen.OracleJson
 {
     public static class DataMapping
     {

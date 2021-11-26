@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using ScryfallApi.Client.Apis;
 
 namespace Proxygen
 {
@@ -9,7 +7,7 @@ namespace Proxygen
     {
         public class CardsNotFoundException : Exception
         {
-            public ICollection<string> NotFoundCards;
+            public ICollection<string> NotFoundCards = null!;
             
             private CardsNotFoundException()
             {

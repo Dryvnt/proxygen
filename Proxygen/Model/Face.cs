@@ -8,9 +8,9 @@ namespace Proxygen.Model
     {
         public Guid CardId { get; init; }
         public int Sequence { get; init; }
-        public string Name { get; init; }
+        public string Name { get; init; } = null!;
         public string? OracleText { get; init; }
-        public string TypeLine { get; init; }
+        public string TypeLine { get; init; } = null!;
         public string? ManaCost { get; init; }
         public string? Power { get; init; }
         public string? Toughness { get; init; }

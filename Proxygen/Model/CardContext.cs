@@ -5,8 +5,10 @@ namespace Proxygen.Model
 {
     public class CardContext : DbContext
     {
-        public DbSet<Card> Cards { get; init; }
-        public DbSet<NameIndex> Index { get; init; }
+        public DbSet<Card> Cards { get; init; } = null!;
+        public DbSet<NameIndex> Index { get; init; } = null!;
+
+        public DbSet<Update> Updates { get; init; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

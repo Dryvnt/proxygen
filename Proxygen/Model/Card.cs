@@ -8,9 +8,9 @@ namespace Proxygen.Model
     {
         [Key] public Guid Id { get; init; }
 
-        public string Name { get; set; }
-        public Layout Layout { get; set; }
-        public List<Face> Faces { get; set; }
+        public string Name { get; init; } = null!;
+        public Layout Layout { get; init; }
+        public List<Face> Faces { get; init; } = null!;
         
         // Underlying DB representation has no 
         public void SortFaces()

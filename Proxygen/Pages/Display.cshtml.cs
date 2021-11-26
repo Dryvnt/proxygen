@@ -26,7 +26,7 @@ namespace Proxygen.Pages
 
         public async Task<IActionResult> OnGetAsync(string decklist)
         {
-            var data = Parser.ParseDecklist(decklist);
+            var data = await Parser.ParseDecklist(decklist);
             
             var (missedNames, cardLookup) = CardLookup(data.Keys);
             foreach (var name in missedNames) UnrecognizedCards.Add(name);

@@ -1,11 +1,15 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
-namespace Cli
+namespace Proxygen.OracleJson
 {
-    public record JsonFace(
+    public record JsonCard(
+        [property: JsonPropertyName("id")] Guid Id,
         [property: JsonPropertyName("name")] string Name,
         [property: JsonPropertyName("type_line")]
         string TypeLine,
+        [property: JsonPropertyName("layout")] string Layout,
         [property: JsonPropertyName("mana_cost")]
         string? ManaCost,
         [property: JsonPropertyName("oracle_text")]
@@ -14,6 +18,8 @@ namespace Cli
         [property: JsonPropertyName("toughness")]
         string? Toughness,
         [property: JsonPropertyName("loyalty")]
-        string? Loyalty
+        string? Loyalty,
+        [property: JsonPropertyName("card_faces")]
+        List<JsonFace>? Faces
     );
 }

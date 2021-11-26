@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Proxygen.Model;
+using Proxygen.Update;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,9 @@ builder.Services.Configure<RouteOptions>(options =>
 
 var connectionString = builder.Configuration.GetConnectionString("Database");
 builder.Services.AddDbContext<CardContext>(options => options.UseNpgsql(connectionString));
+
+builder.Services.AddHttpClient();
+builder.Services.AddHostedService<Worker>();
 
 var app = builder.Build();
 

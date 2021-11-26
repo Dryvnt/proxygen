@@ -91,6 +91,23 @@ namespace Proxygen.Migrations
                     b.ToTable("Index");
                 });
 
+            modelBuilder.Entity("Proxygen.Model.Update", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("When")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Updates");
+                });
+
             modelBuilder.Entity("Proxygen.Model.Face", b =>
                 {
                     b.HasOne("Proxygen.Model.Card", null)

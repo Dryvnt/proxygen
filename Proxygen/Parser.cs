@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Proxygen.Model;
 
 namespace Proxygen
@@ -42,10 +43,11 @@ namespace Proxygen
             return (Sanitize(name), amount);
         }
 
-        public static IDictionary<string, int> ParseDecklist(string decklist)
+        public static Task<IDictionary<string, int>> ParseDecklist(string decklist)
         {
             var lines = Regex.Split(decklist.Trim(), "\r\n|\r|\n");
-            return lines.Select(Sanitize).Select(ParseLine).ToDictionary(p => p.Item1, p => p.Item2);
+            IDictionary<string, int> dict = lines.Select(Sanitize).Select(ParseLine).ToDictionary(p => p.Item1, p => p.Item2);
+            return Task.FromResult(dict);
         }
     }
 }
