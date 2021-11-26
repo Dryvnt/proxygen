@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Parsing;
-using SharedModel;
+using Proxygen;
+using Proxygen.Model;
 using Xunit;
 
 namespace Test

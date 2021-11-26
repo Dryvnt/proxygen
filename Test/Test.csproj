@@ -21,8 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Parsing\Parsing.csproj" />
-        <ProjectReference Include="..\SharedModel\SharedModel.csproj" />
+        <ProjectReference Include="..\Proxygen\Proxygen.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -2,84 +2,87 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SharedModel;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using Proxygen.Model;
 
 #nullable disable
 
-namespace SharedModel.Migrations.SqliteMigrations
+namespace Proxygen.Migrations
 {
-    [DbContext(typeof(SqliteCardContext))]
-    [Migration("20211126155706_Initial")]
-    partial class Initial
+    [DbContext(typeof(CardContext))]
+    partial class CardContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.0");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("SharedModel.Card", b =>
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Proxygen.Model.Card", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Layout")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.ToTable("Cards");
                 });
 
-            modelBuilder.Entity("SharedModel.Face", b =>
+            modelBuilder.Entity("Proxygen.Model.Face", b =>
                 {
                     b.Property<Guid>("CardId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Sequence")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Loyalty")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("ManaCost")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("OracleText")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Power")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Toughness")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("TypeLine")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("CardId", "Sequence");
 
                     b.ToTable("Face");
                 });
 
-            modelBuilder.Entity("SharedModel.NameIndex", b =>
+            modelBuilder.Entity("Proxygen.Model.NameIndex", b =>
                 {
                     b.Property<string>("SanitizedName")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<Guid>("CardId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.HasKey("SanitizedName");
 
@@ -88,18 +91,18 @@ namespace SharedModel.Migrations.SqliteMigrations
                     b.ToTable("Index");
                 });
 
-            modelBuilder.Entity("SharedModel.Face", b =>
+            modelBuilder.Entity("Proxygen.Model.Face", b =>
                 {
-                    b.HasOne("SharedModel.Card", null)
+                    b.HasOne("Proxygen.Model.Card", null)
                         .WithMany("Faces")
                         .HasForeignKey("CardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SharedModel.NameIndex", b =>
+            modelBuilder.Entity("Proxygen.Model.NameIndex", b =>
                 {
-                    b.HasOne("SharedModel.Card", "Card")
+                    b.HasOne("Proxygen.Model.Card", "Card")
                         .WithMany()
                         .HasForeignKey("CardId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -108,7 +111,7 @@ namespace SharedModel.Migrations.SqliteMigrations
                     b.Navigation("Card");
                 });
 
-            modelBuilder.Entity("SharedModel.Card", b =>
+            modelBuilder.Entity("Proxygen.Model.Card", b =>
                 {
                     b.Navigation("Faces");
                 });

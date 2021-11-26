@@ -6,8 +6,8 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Parsing;
-using SharedModel;
+using Proxygen;
+using Proxygen.Model;
 
 namespace Cli
 {
@@ -91,8 +91,10 @@ namespace Cli
             }
             
             var cards = await ReadData(jsonCards);
-            
-            await using var context = new SqliteCardContext();
+
+            var dbOptions = new DbContextOptionsBuilder<CardContext>();
+            dbOptions.UseNpgsql("Server=app-4ea11042-884c-4b3c-b4f2-5346f9149190-do-user-1525366-0.b.db.ondigitalocean.com;Port=25060;Database=db;User Id=db;Password=WNpjR1x7tWJIAEon;SSL Mode=Require");
+            await using var context = new CardContext(dbOptions.Options);
             Console.WriteLine("Migrating DB");
             await context.Database.MigrateAsync();
             await using var transaction = await context.Database.BeginTransactionAsync();

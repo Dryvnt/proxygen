@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
-using SharedModel;
+using Proxygen.Model;
 
-namespace Parsing
+namespace Proxygen
 {
     public static class Parser
     {

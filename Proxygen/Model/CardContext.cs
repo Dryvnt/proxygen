@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Microsoft.EntityFrameworkCore;
 
-namespace SharedModel
+namespace Proxygen.Model
 {
     public class CardContext : DbContext
     {
@@ -24,16 +24,9 @@ namespace SharedModel
                 .WithMany()
                 .IsRequired();
         }
-    }
 
-    public class SqliteCardContext : CardContext
-    {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public CardContext(DbContextOptions<CardContext> options) : base(options)
         {
-            var tmp = Path.GetTempPath();
-            var path = Path.Combine(tmp, "proxygen.sqlite");
-            optionsBuilder.UseSqlite($"Data Source={path}");
-            optionsBuilder.EnableSensitiveDataLogging();
         }
     }
 }

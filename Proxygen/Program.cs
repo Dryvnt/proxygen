@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SharedModel;
+using Proxygen.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +15,7 @@ builder.Services.Configure<RouteOptions>(options =>
     options.LowercaseQueryStrings = true;
 });
 
-builder.Services.AddDbContext<SqliteCardContext>();
-builder.Services.AddTransient<CardContext, SqliteCardContext>();
+builder.Services.AddDbContext<CardContext>(options => options.UseNpgsql("asdf"));
 
 var app = builder.Build();
 

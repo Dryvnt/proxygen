@@ -1,5 +1,5 @@
 @page
-@using SharedModel
+@using Proxygen.Model
 @model Display
 @{
     Layout = "_DisplayLayout";
@@ -63,7 +63,7 @@ else
 {
     @switch (card.Layout)
     {
-        case SharedModel.Layout.Normal:
+        case Proxygen.Model.Layout.Normal:
         {
             @foreach (var face in card.Faces)
             {
@@ -73,7 +73,7 @@ else
             }
             break;
         }
-        case SharedModel.Layout.Split:
+        case Proxygen.Model.Layout.Split:
         {
             <div class="card_frame">
                 @foreach (var face in card.Faces)
@@ -89,7 +89,7 @@ else
             </div>
             break;
         }
-        case SharedModel.Layout.Flip:
+        case Proxygen.Model.Layout.Flip:
         {
             <div class="card_frame">
                 @{ RenderFace(card.Faces[0], "card_inner flip_top"); }

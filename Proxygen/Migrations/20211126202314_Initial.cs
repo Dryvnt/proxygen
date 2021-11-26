@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace SharedModel.Migrations.SqliteMigrations
+namespace Proxygen.Migrations
 {
     public partial class Initial : Migration
     {
@@ -13,9 +13,9 @@ namespace SharedModel.Migrations.SqliteMigrations
                 name: "Cards",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Layout = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Layout = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -26,15 +26,15 @@ namespace SharedModel.Migrations.SqliteMigrations
                 name: "Face",
                 columns: table => new
                 {
-                    CardId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Sequence = table.Column<int>(type: "INTEGER", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    OracleText = table.Column<string>(type: "TEXT", nullable: true),
-                    TypeLine = table.Column<string>(type: "TEXT", nullable: false),
-                    ManaCost = table.Column<string>(type: "TEXT", nullable: true),
-                    Power = table.Column<string>(type: "TEXT", nullable: true),
-                    Toughness = table.Column<string>(type: "TEXT", nullable: true),
-                    Loyalty = table.Column<string>(type: "TEXT", nullable: true)
+                    CardId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Sequence = table.Column<int>(type: "integer", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    OracleText = table.Column<string>(type: "text", nullable: true),
+                    TypeLine = table.Column<string>(type: "text", nullable: false),
+                    ManaCost = table.Column<string>(type: "text", nullable: true),
+                    Power = table.Column<string>(type: "text", nullable: true),
+                    Toughness = table.Column<string>(type: "text", nullable: true),
+                    Loyalty = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -51,8 +51,8 @@ namespace SharedModel.Migrations.SqliteMigrations
                 name: "Index",
                 columns: table => new
                 {
-                    SanitizedName = table.Column<string>(type: "TEXT", nullable: false),
-                    CardId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    SanitizedName = table.Column<string>(type: "text", nullable: false),
+                    CardId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
