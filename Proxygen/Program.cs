@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Proxygen.Model;
@@ -15,14 +16,19 @@ builder.Services.Configure<RouteOptions>(options =>
     options.LowercaseQueryStrings = true;
 });
 
-builder.Services.AddDbContext<CardContext>(options => options.UseNpgsql("asdf"));
+var connectionString = builder.Configuration.GetConnectionString("Database");
+builder.Services.AddDbContext<CardContext>(options => options.UseNpgsql(connectionString));
 
 var app = builder.Build();
 
 // Ensure DB is migrated
-await using (var cardContext = app.Services.GetRequiredService<CardContext>())
+await using (var serviceScope = app.Services.CreateAsyncScope())
 {
-    await cardContext.Database.MigrateAsync();
+    await using (var cardContext = serviceScope.ServiceProvider.GetRequiredService<CardContext>())
+    {
+        await cardContext.Database.MigrateAsync();
+    }
+    
 }
 
 // Configure the HTTP request pipeline.

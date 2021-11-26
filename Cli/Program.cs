@@ -93,7 +93,7 @@ namespace Cli
             var cards = await ReadData(jsonCards);
 
             var dbOptions = new DbContextOptionsBuilder<CardContext>();
-            dbOptions.UseNpgsql("Server=app-4ea11042-884c-4b3c-b4f2-5346f9149190-do-user-1525366-0.b.db.ondigitalocean.com;Port=25060;Database=db;User Id=db;Password=WNpjR1x7tWJIAEon;SSL Mode=Require");
+            dbOptions.UseNpgsql("Host=localhost;Port=5433;Database=proxygen;Username=proxygen;Password=password");
             await using var context = new CardContext(dbOptions.Options);
             Console.WriteLine("Migrating DB");
             await context.Database.MigrateAsync();
