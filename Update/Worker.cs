@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
@@ -11,10 +10,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Proxygen.Model;
-using Proxygen.OracleJson;
+using SharedModel.Model;
+using SharedModel.OracleJson;
 
-namespace Proxygen.Update
+namespace Update
 {
     public class Worker : BackgroundService
     {
@@ -72,8 +71,6 @@ namespace Proxygen.Update
 
             var oracleInformation = bulkInformationWrapper.BulkInformations.First(i => i.Type == "oracle_cards");
             
-            _logger.LogError("Oracle information: {}", oracleInformation);
-            
             var oracleRaw = await client.GetStreamAsync(oracleInformation.DownloadUri, stoppingToken);
             var jsonStream = JsonSerializer.DeserializeAsyncEnumerable<JsonCard>(oracleRaw, cancellationToken: stoppingToken);
 
@@ -89,7 +86,7 @@ namespace Proxygen.Update
             await using var scope = _serviceScopeFactory.CreateAsyncScope();
             await using var context = scope.ServiceProvider.GetRequiredService<CardContext>();
 
-            var update = new Model.Update
+            var update = new SharedModel.Model.Update
             {
                 Id = Guid.NewGuid(),
                 When = DateTime.UtcNow,
@@ -113,6 +110,7 @@ namespace Proxygen.Update
 
                     await transaction.CommitAsync(stoppingToken);
                 }
+                _logger.LogInformation("Update success");
                 update.Status = UpdateStatus.Success;
             }
             catch (Exception e)
@@ -124,7 +122,9 @@ namespace Proxygen.Update
             {
                 _logger.LogInformation("Committing changes");
                 await context.SaveChangesAsync(stoppingToken);
+                _logger.LogInformation("Changed committed");
             }
+            
         }
         
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -134,6 +134,10 @@ namespace Proxygen.Update
             while (!stoppingToken.IsCancellationRequested)
             {
                 var untilNext = await UntilNextUpdate(stoppingToken);
+                if (untilNext > TimeSpan.Zero)
+                {
+                    _logger.LogInformation("Waiting {} until next update", untilNext);
+                }
                 await Task.Delay(untilNext, stoppingToken);
                 await PerformUpdate(stoppingToken);
             }

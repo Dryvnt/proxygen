@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Proxygen.OracleJson
+namespace SharedModel.OracleJson
 {
     public record JsonFace(
         [property: JsonPropertyName("name")] string Name,

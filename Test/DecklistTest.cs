@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Proxygen;
+using Update;
 using Xunit;
 
 namespace Test
@@ -23,7 +24,7 @@ namespace Test
         [MemberData(nameof(ExampleDecklists))]
         public async Task Basic(string decklist, IEnumerable<(string, int)> expected)
         {
-            var parsedExpected = expected.ToDictionary(p => Parser.Sanitize(p.Item1), p => p.Item2);
+            var parsedExpected = expected.ToDictionary(p => Names.Sanitize(p.Item1), p => p.Item2);
 
             var parsed = await Parser.ParseDecklist(decklist);
 

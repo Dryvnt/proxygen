@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Proxygen.Model;
-using Proxygen.OracleJson;
+using SharedModel.Model;
+using SharedModel.OracleJson;
 
-namespace Proxygen.Update
+namespace Update
 {
     public static class Helpers
     {
@@ -60,7 +59,7 @@ namespace Proxygen.Update
 
             // Convert all faces to index entries
             var entries = context.Cards.AsEnumerable()
-                .Select(c => new { Card = c, Names = Parser.CardNames(c) })
+                .Select(c => new { Card = c, Names = Names.CardNames(c) })
                 .SelectMany(p => p.Names.Select(n => new NameIndex { SanitizedName = n, Card = p.Card }));
 
             // If multiple cards share a name (see: Everythingamajig) just pick one of them, it's un-cards, we support those on a "if it works it works" basis.

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Proxygen.Model;
+using SharedModel.Model;
 
-namespace Proxygen.OracleJson
+namespace SharedModel.OracleJson
 {
     public static class DataMapping
     {

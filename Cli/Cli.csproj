@@ -14,7 +14,16 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Proxygen\Proxygen.csproj" />
+      <Content Include="appsettings.json">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SharedModel\SharedModel.csproj" />
+      <ProjectReference Include="..\Update\Update.csproj" />
     </ItemGroup>
 
 </Project>

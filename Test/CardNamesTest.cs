@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Proxygen;
-using Proxygen.Model;
+using SharedModel.Model;
+using Update;
 using Xunit;
 
 namespace Test
@@ -27,9 +28,9 @@ namespace Test
                 },
             };
 
-            var expected = new[] { "foobar", "foo", "bar" }.Select(Parser.Sanitize);
+            var expected = new[] { "foobar", "foo", "bar" }.Select(Names.Sanitize);
 
-            Assert.Equal(expected, Parser.CardNames(card));
+            Assert.Equal(expected, Names.CardNames(card));
         }
     }
 }

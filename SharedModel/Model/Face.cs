@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace Proxygen.Model
+namespace SharedModel.Model
 {
     public class Face
     {

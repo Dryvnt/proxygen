@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using Proxygen.Model;
+using SharedModel.Model;
 
 #nullable disable
 
-namespace Proxygen.Migrations
+namespace SharedModel.Migrations
 {
     [DbContext(typeof(CardContext))]
     [Migration("20211126202314_Initial")]

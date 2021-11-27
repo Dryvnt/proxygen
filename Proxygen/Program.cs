@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Proxygen.Model;
-using Proxygen.Update;
+using SharedModel.Model;
+using Update;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,11 +17,13 @@ builder.Services.Configure<RouteOptions>(options =>
     options.LowercaseQueryStrings = true;
 });
 
-var connectionString = builder.Configuration.GetConnectionString("Database");
-builder.Services.AddDbContext<CardContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<CardContext>();
 
-builder.Services.AddHttpClient();
-builder.Services.AddHostedService<Worker>();
+if (builder.Configuration.GetValue<bool>("Updater:Enabled"))
+{
+    builder.Services.AddHttpClient();
+    builder.Services.AddHostedService<Worker>();
+}
 
 var app = builder.Build();
 

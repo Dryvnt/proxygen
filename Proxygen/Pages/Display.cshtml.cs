@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Proxygen.Model;
+using SharedModel.Model;
+using Update;
 
 namespace Proxygen.Pages
 {

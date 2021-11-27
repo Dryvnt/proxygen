@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using Proxygen;
+using Update;
 using Xunit;
 
 namespace Test
@@ -17,14 +18,14 @@ namespace Test
         [InlineData("Fire // Ice", "fireice")]
         public void Basic(string name, string expected)
         {
-            Assert.Equal(expected, Parser.Sanitize(name));
+            Assert.Equal(expected, Names.Sanitize(name));
         }
 
         [Theory(Skip = "Long runtime. Only run manually.")]
         [MemberData(nameof(AllCardNames))]
         public void AlwaysAscii(string name)
         {
-            var sanitized = Parser.Sanitize(name);
+            var sanitized = Names.Sanitize(name);
             
             // Weird way to assert string is ascii
             Assert.Equal(sanitized.Length, Encoding.UTF8.GetByteCount(sanitized));

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Proxygen.OracleJson
+namespace SharedModel.OracleJson
 {
     public record BulkInformationWrapper(
         [property: JsonPropertyName("data")] List<BulkInformation> BulkInformations

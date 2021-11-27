@@ -18,4 +18,9 @@
         <PackageReference Include="System.Linq.Async.Queryable" Version="5.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\SharedModel\SharedModel.csproj" />
+      <ProjectReference Include="..\Update\Update.csproj" />
+    </ItemGroup>
+
 </Project>

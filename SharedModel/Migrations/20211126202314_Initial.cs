@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Proxygen.Migrations
+namespace SharedModel.Migrations
 {
     public partial class Initial : Migration
     {

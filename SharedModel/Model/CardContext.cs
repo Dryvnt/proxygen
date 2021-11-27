@@ -1,10 +1,11 @@
-﻿using System.IO;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
-namespace Proxygen.Model
+namespace SharedModel.Model
 {
     public class CardContext : DbContext
     {
+        private readonly IConfiguration _configuration;
         public DbSet<Card> Cards { get; init; } = null!;
         public DbSet<NameIndex> Index { get; init; } = null!;
 
@@ -27,8 +28,15 @@ namespace Proxygen.Model
                 .IsRequired();
         }
 
-        public CardContext(DbContextOptions<CardContext> options) : base(options)
+        public CardContext(IConfiguration configuration)
         {
+            _configuration = configuration;
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            var connectionString = _configuration.GetConnectionString("Database");
+            optionsBuilder.UseNpgsql(connectionString);
         }
     }
 }

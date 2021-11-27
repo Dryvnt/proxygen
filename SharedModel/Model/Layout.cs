@@ -1,4 +1,4 @@
-﻿namespace Proxygen.Model
+﻿namespace SharedModel.Model
 {
     public enum Layout
     {

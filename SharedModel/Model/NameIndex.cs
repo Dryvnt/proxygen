@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Proxygen.Model
+namespace SharedModel.Model
 {
     public class NameIndex
     {

@@ -7,12 +7,11 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
-using Proxygen;
-using Proxygen.Model;
-using Proxygen.OracleJson;
-using Proxygen.Update;
+using SharedModel.Model;
+using SharedModel.OracleJson;
+using Update;
 
 namespace Cli
 {
@@ -53,9 +52,8 @@ namespace Cli
             
             var cards = Helpers.ConvertData(logger, jsonCards.ToAsyncEnumerable(), stoppingToken);
 
-            var dbOptions = new DbContextOptionsBuilder<CardContext>();
-            dbOptions.UseNpgsql("Host=localhost;Port=5433;Database=proxygen;Username=proxygen;Password=password");
-            await using var context = new CardContext(dbOptions.Options);
+            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            await using var context = new CardContext(config);
             Console.WriteLine("Migrating DB");
             await context.Database.MigrateAsync(cancellationToken: stoppingToken);
             await using var transaction = await context.Database.BeginTransactionAsync(stoppingToken);
