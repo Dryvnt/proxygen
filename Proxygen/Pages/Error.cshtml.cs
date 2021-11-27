@@ -1,7 +1,4 @@
-using System;
 using System.Diagnostics;
-using System.IO;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;

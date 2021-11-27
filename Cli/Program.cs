@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,11 +16,10 @@ namespace Cli
 {
     internal class Program
     {
-
         public static async Task<ICollection<JsonCard>> ReadJson(Stream input)
         {
             return await JsonSerializer.DeserializeAsync<List<JsonCard>>(input) ??
-                            throw new NotImplementedException();
+                   throw new NotImplementedException();
         }
 
         /// <summary>
@@ -31,31 +29,28 @@ namespace Cli
         /// <param name="filterTo">Write the parsed JSON to this file before inserting into DB</param>
         public static async Task Main(FileInfo? inputFile, FileInfo? filterTo)
         {
-            using var loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder.AddConsole();
-            });
+            using var loggerFactory = LoggerFactory.Create(builder => { builder.AddConsole(); });
             var logger = loggerFactory.CreateLogger<Program>();
             var stoppingToken = CancellationToken.None;
-            
+
             logger.LogInformation("Opening input file");
             await using var input = inputFile?.OpenRead() ?? Console.OpenStandardInput();
 
             var jsonCards = await ReadJson(input);
-            
+
             if (filterTo is not null)
             {
                 logger.LogInformation("Writing filtered JSON to file");
                 await using var filterOut = filterTo.OpenWrite();
                 await JsonSerializer.SerializeAsync(filterOut, jsonCards, cancellationToken: stoppingToken);
             }
-            
+
             var cards = Helpers.ConvertData(logger, jsonCards.ToAsyncEnumerable(), stoppingToken);
 
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
             await using var context = new CardContext(config);
             Console.WriteLine("Migrating DB");
-            await context.Database.MigrateAsync(cancellationToken: stoppingToken);
+            await context.Database.MigrateAsync(stoppingToken);
             await using var transaction = await context.Database.BeginTransactionAsync(stoppingToken);
 
             Console.WriteLine("Inserting cards");

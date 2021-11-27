@@ -9,7 +9,7 @@ namespace SharedModel.Model
         Success = 1,
         Failure = 2,
     }
-    
+
     public class Update
     {
         [Key] public Guid Id { get; init; }

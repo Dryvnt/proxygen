@@ -6,6 +6,12 @@ namespace SharedModel.Model
     public class CardContext : DbContext
     {
         private readonly IConfiguration _configuration;
+
+        public CardContext(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public DbSet<Card> Cards { get; init; } = null!;
         public DbSet<NameIndex> Index { get; init; } = null!;
 
@@ -26,11 +32,6 @@ namespace SharedModel.Model
                 .HasOne(i => i.Card)
                 .WithMany()
                 .IsRequired();
-        }
-
-        public CardContext(IConfiguration configuration)
-        {
-            _configuration = configuration;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

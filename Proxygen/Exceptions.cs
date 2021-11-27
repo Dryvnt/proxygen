@@ -8,18 +8,18 @@ namespace Proxygen
         public class CardsNotFoundException : Exception
         {
             public ICollection<string> NotFoundCards = null!;
-            
+
             private CardsNotFoundException()
             {
             }
 
             private CardsNotFoundException(string message)
-            : base(message)
+                : base(message)
             {
             }
-            
+
             private CardsNotFoundException(string message, Exception innerException)
-            : base(message, innerException)
+                : base(message, innerException)
             {
             }
 
@@ -28,6 +28,5 @@ namespace Proxygen
                 NotFoundCards = notFoundCards;
             }
         }
-        
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Proxygen;
 using SharedModel.Model;
 using Update;
 using Xunit;

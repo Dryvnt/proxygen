@@ -16,7 +16,7 @@ namespace Proxygen.Pages
             _logger = logger;
             _cardContext = cardContext;
         }
-        
+
         public IActionResult OnGet()
         {
             var allSplitNames = _cardContext.Cards.Where(c => c.Layout == Layout.Split).Select(c => c.Name);

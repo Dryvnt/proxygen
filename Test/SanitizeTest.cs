@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.Json;
-using Proxygen;
 using Update;
 using Xunit;
 
@@ -12,6 +10,19 @@ namespace Test
 {
     public class SanitizeTest
     {
+        public static TheoryData<string> AllCardNames
+        {
+            get
+            {
+                var jsonRaw = File.OpenRead("all-names.json");
+                var names = JsonSerializer.Deserialize<List<string>>(jsonRaw);
+                Debug.Assert(names is not null);
+                var data = new TheoryData<string>();
+                foreach (var name in names) data.Add(name);
+                return data;
+            }
+        }
+
         [Theory]
         [InlineData("Snapcaster Mage", "snapcastermage")]
         [InlineData("Jace, the Mind Sculptor", "jacethemindsculptor")]
@@ -26,26 +37,9 @@ namespace Test
         public void AlwaysAscii(string name)
         {
             var sanitized = Names.Sanitize(name);
-            
+
             // Weird way to assert string is ascii
             Assert.Equal(sanitized.Length, Encoding.UTF8.GetByteCount(sanitized));
-            
-        }
-
-        public static TheoryData<string> AllCardNames
-        {
-            get
-            {
-                var jsonRaw = File.OpenRead("all-names.json");
-                var names = JsonSerializer.Deserialize<List<string>>(jsonRaw);
-                Debug.Assert(names is not null);
-                var data = new TheoryData<string>();
-                foreach (var name in names)
-                {
-                    data.Add(name);
-                }
-                return data;
-            }
         }
     }
 }

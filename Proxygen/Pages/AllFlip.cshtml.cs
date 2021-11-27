@@ -16,7 +16,7 @@ namespace Proxygen.Pages
             _logger = logger;
             _cardContext = cardContext;
         }
-        
+
         public IActionResult OnGet()
         {
             var allFlipNames = _cardContext.Cards.Where(c => c.Layout == Layout.Flip).Select(c => c.Name);

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +6,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SharedModel.Model;
-using Update;
 
 namespace Proxygen.Pages
 {
@@ -15,6 +13,7 @@ namespace Proxygen.Pages
     {
         private readonly CardContext _cardContext;
         private readonly ILogger<Display> _logger;
+        public HashSet<string> UnrecognizedCards = new();
 
         public Display(ILogger<Display> logger, CardContext cardContext)
         {
@@ -23,25 +22,21 @@ namespace Proxygen.Pages
         }
 
         public List<Card> Cards { get; } = new();
-        public HashSet<string> UnrecognizedCards = new();
 
         public async Task<IActionResult> OnGetAsync(string decklist)
         {
             var data = await Parser.ParseDecklist(decklist);
-            
+
             var (missedNames, cardLookup) = CardLookup(data.Keys);
             foreach (var name in missedNames) UnrecognizedCards.Add(name);
 
             foreach (var (name, amount) in data)
             {
-                if(missedNames.Contains(name)) continue;
+                if (missedNames.Contains(name)) continue;
                 var card = cardLookup[name];
                 // Sort faces for aesthetic value
                 card.SortFaces();
-                for (var i = 0; i < amount; i++)
-                {
-                    Cards.Add(card);
-                }
+                for (var i = 0; i < amount; i++) Cards.Add(card);
             }
 
             return Page();

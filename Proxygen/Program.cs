@@ -34,7 +34,6 @@ await using (var serviceScope = app.Services.CreateAsyncScope())
     {
         await cardContext.Database.MigrateAsync();
     }
-    
 }
 
 // Configure the HTTP request pipeline.

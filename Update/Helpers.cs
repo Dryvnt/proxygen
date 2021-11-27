@@ -24,22 +24,20 @@ namespace Update
             "scheme", "vanguard", "token", "double_faced_token", "emblem", "augment", "host", "art_series",
             "double_sided",
         };
-        
-        public static async IAsyncEnumerable<Card> ConvertData(ILogger logger, IAsyncEnumerable<JsonCard> jsonCards, [EnumeratorCancellation] CancellationToken stoppingToken)
+
+        public static async IAsyncEnumerable<Card> ConvertData(ILogger logger, IAsyncEnumerable<JsonCard> jsonCards,
+            [EnumeratorCancellation] CancellationToken stoppingToken)
         {
             await foreach (var card in jsonCards.WithCancellation(stoppingToken))
             {
-                if (!KnownLayouts.Contains(card.Layout))
-                {
-                    logger.LogWarning("Unknown layout '{}", card.Layout);
-                }
+                if (!KnownLayouts.Contains(card.Layout)) logger.LogWarning("Unknown layout '{}", card.Layout);
                 if (!LayoutWhitelist.Contains(card.Layout)) continue;
                 yield return DataMapping.FromJson(card);
-
             }
         }
 
-        public static async Task BuildCards(CardContext context, ILogger logger, IAsyncEnumerable<Card> cards, CancellationToken stoppingToken)
+        public static async Task BuildCards(CardContext context, ILogger logger, IAsyncEnumerable<Card> cards,
+            CancellationToken stoppingToken)
         {
             // It would probably be more efficient to manually upsert the cards, but that's complicated and the data set is so small.
             // TODO: Make this not nuke from orbit
@@ -50,7 +48,7 @@ namespace Update
             await context.Cards.AddRangeAsync(cardsList, stoppingToken);
             await context.SaveChangesAsync(stoppingToken);
         }
-        
+
         public static async Task BuildIndex(CardContext context, ILogger logger, CancellationToken stoppingToken)
         {
             // Nuke index and rebuild from scratch.
@@ -68,6 +66,5 @@ namespace Update
             await context.Index.AddRangeAsync(uniqueEntries, stoppingToken);
             await context.SaveChangesAsync(stoppingToken);
         }
-        
     }
 }

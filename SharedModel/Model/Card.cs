@@ -11,7 +11,7 @@ namespace SharedModel.Model
         public string Name { get; init; } = null!;
         public Layout Layout { get; init; }
         public List<Face> Faces { get; init; } = null!;
-        
+
         // Underlying DB representation has no 
         public void SortFaces()
         {
