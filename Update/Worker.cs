@@ -17,18 +17,19 @@ namespace Update
 {
     public class Worker : BackgroundService
     {
-        private readonly IServiceScopeFactory _serviceScopeFactory;
-        private readonly ILogger<Worker> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ILogger<Worker> _logger;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public Worker(IServiceScopeFactory serviceScopeFactory, ILogger<Worker> logger, IHttpClientFactory httpClientFactory)
+        private readonly TimeSpan _updateFrequency = TimeSpan.FromDays(1);
+
+        public Worker(IServiceScopeFactory serviceScopeFactory, ILogger<Worker> logger,
+            IHttpClientFactory httpClientFactory)
         {
             _serviceScopeFactory = serviceScopeFactory;
             _logger = logger;
             _httpClientFactory = httpClientFactory;
         }
-
-        private readonly TimeSpan _updateFrequency = TimeSpan.FromDays(1);
 
         private async Task WaitUntilMigrated(CancellationToken stoppingToken)
         {
@@ -37,7 +38,7 @@ namespace Update
             while ((await context.Database.GetPendingMigrationsAsync(stoppingToken)).Any())
                 await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
         }
-        
+
         private async Task<TimeSpan> UntilNextUpdate(CancellationToken stoppingToken)
         {
             await using var scope = _serviceScopeFactory.CreateAsyncScope();
@@ -46,7 +47,7 @@ namespace Update
             var latest = await context.Updates.OrderBy(u => u.When).LastOrDefaultAsync(stoppingToken);
 
             if (latest is null) return TimeSpan.Zero;
-            
+
             if (latest.Status is UpdateStatus.Begun)
             {
                 _logger.LogError("An earlier update failed. Setting status to failure. {}", latest);
@@ -65,14 +66,17 @@ namespace Update
             using var client = _httpClientFactory.CreateClient();
 
             var bulkInformationRaw = await client.GetStreamAsync("https://api.scryfall.com/bulk-data", stoppingToken);
-            var bulkInformationWrapper = await JsonSerializer.DeserializeAsync<BulkInformationWrapper>(bulkInformationRaw, cancellationToken: stoppingToken);
+            var bulkInformationWrapper =
+                await JsonSerializer.DeserializeAsync<BulkInformationWrapper>(bulkInformationRaw,
+                    cancellationToken: stoppingToken);
 
             if (bulkInformationWrapper is null) throw new NotImplementedException("Could not parse bulk data?");
 
             var oracleInformation = bulkInformationWrapper.BulkInformations.First(i => i.Type == "oracle_cards");
-            
+
             var oracleRaw = await client.GetStreamAsync(oracleInformation.DownloadUri, stoppingToken);
-            var jsonStream = JsonSerializer.DeserializeAsyncEnumerable<JsonCard>(oracleRaw, cancellationToken: stoppingToken);
+            var jsonStream =
+                JsonSerializer.DeserializeAsyncEnumerable<JsonCard>(oracleRaw, cancellationToken: stoppingToken);
 
             await foreach (var card in jsonStream.WithCancellation(stoppingToken))
             {
@@ -93,6 +97,7 @@ namespace Update
                 Status = UpdateStatus.Begun,
             };
 
+            using var _ = _logger.BeginScope(update.Id);
             await context.Updates.AddAsync(update, stoppingToken);
             await context.SaveChangesAsync(stoppingToken);
 
@@ -110,6 +115,7 @@ namespace Update
 
                     await transaction.CommitAsync(stoppingToken);
                 }
+
                 _logger.LogInformation("Update success");
                 update.Status = UpdateStatus.Success;
             }
@@ -124,9 +130,8 @@ namespace Update
                 await context.SaveChangesAsync(stoppingToken);
                 _logger.LogInformation("Changed committed");
             }
-            
         }
-        
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             await WaitUntilMigrated(stoppingToken);
@@ -134,10 +139,7 @@ namespace Update
             while (!stoppingToken.IsCancellationRequested)
             {
                 var untilNext = await UntilNextUpdate(stoppingToken);
-                if (untilNext > TimeSpan.Zero)
-                {
-                    _logger.LogInformation("Waiting {} until next update", untilNext);
-                }
+                if (untilNext > TimeSpan.Zero) _logger.LogInformation("Waiting {} until next update", untilNext);
                 await Task.Delay(untilNext, stoppingToken);
                 await PerformUpdate(stoppingToken);
             }
