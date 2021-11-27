@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace Test
         public static TheoryData<string, IEnumerable<(string, int)>> ExampleDecklists =>
             new()
             {
+                { "", Array.Empty<(string, int)>() },
                 { "Snapcaster Mage", new[] { ("Snapcaster Mage", 1) } },
                 { "Snapcaster Mage\n", new[] { ("Snapcaster Mage", 1) } },
                 { "\n\n\n\nSnapcaster Mage\n\n\n\n\n", new[] { ("Snapcaster Mage", 1) } },

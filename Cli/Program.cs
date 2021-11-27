@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SharedModel.Model;
 using SharedModel.OracleJson;
@@ -29,10 +30,16 @@ namespace Cli
         /// <param name="filterTo">Write the parsed JSON to this file before inserting into DB</param>
         public static async Task Main(FileInfo? inputFile, FileInfo? filterTo)
         {
-            using var loggerFactory = LoggerFactory.Create(builder => { builder.AddConsole(); });
-            var logger = loggerFactory.CreateLogger<Program>();
+            var services = new ServiceCollection();
+            services.AddLogging(options => options.AddConsole());
+            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            var connectionString = config.GetConnectionString("Database");
+
+            services.AddDbContext<CardContext>(options => options.UseNpgsql(connectionString));
+            var provider = services.BuildServiceProvider();
             var stoppingToken = CancellationToken.None;
 
+            var logger = provider.GetRequiredService<ILogger<Program>>();
             logger.LogInformation("Opening input file");
             await using var input = inputFile?.OpenRead() ?? Console.OpenStandardInput();
 
@@ -47,8 +54,9 @@ namespace Cli
 
             var cards = Helpers.ConvertData(logger, jsonCards.ToAsyncEnumerable(), stoppingToken);
 
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-            await using var context = new CardContext(config);
+            await using var serviceScope = provider.CreateAsyncScope();
+            await using var context = serviceScope.ServiceProvider.GetRequiredService<CardContext>();
+
             Console.WriteLine("Migrating DB");
             await context.Database.MigrateAsync(stoppingToken);
             await using var transaction = await context.Database.BeginTransactionAsync(stoppingToken);

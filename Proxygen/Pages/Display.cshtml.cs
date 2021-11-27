@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -23,8 +24,10 @@ namespace Proxygen.Pages
 
         public List<Card> Cards { get; } = new();
 
-        public async Task<IActionResult> OnGetAsync(string decklist)
+        public async Task<IActionResult> OnGetAsync(string? decklist)
         {
+            decklist ??= "";
+
             var data = await Parser.ParseDecklist(decklist);
 
             var (missedNames, cardLookup) = CardLookup(data.Keys);
@@ -38,6 +41,17 @@ namespace Proxygen.Pages
                 card.SortFaces();
                 for (var i = 0; i < amount; i++) Cards.Add(card);
             }
+
+            var record = new Record
+            {
+                Id = Guid.NewGuid(),
+                When = DateTime.UtcNow,
+                Cards = Cards,
+                UnrecognizedCards = missedNames.ToList(),
+            };
+
+            await _cardContext.AddAsync(record);
+            await _cardContext.SaveChangesAsync();
 
             return Page();
         }

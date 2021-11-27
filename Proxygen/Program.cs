@@ -17,7 +17,8 @@ builder.Services.Configure<RouteOptions>(options =>
     options.LowercaseQueryStrings = true;
 });
 
-builder.Services.AddDbContext<CardContext>();
+var connectionString = builder.Configuration.GetConnectionString("Database");
+builder.Services.AddDbContext<CardContext>(options => options.UseNpgsql(connectionString));
 
 if (builder.Configuration.GetValue<bool>("Updater:Enabled"))
 {

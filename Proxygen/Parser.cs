@@ -22,12 +22,15 @@ namespace Proxygen
             return (Names.Sanitize(name), amount);
         }
 
-        public static Task<IDictionary<string, int>> ParseDecklist(string decklist)
+        public static async Task<IDictionary<string, int>> ParseDecklist(string decklist)
         {
+            if (decklist.Length == 0)
+                return new Dictionary<string, int>();
+
             var lines = Regex.Split(decklist.Trim(), "\r\n|\r|\n");
             IDictionary<string, int> dict = lines.Select(Names.Sanitize).Select(ParseLine)
                 .ToDictionary(p => p.Item1, p => p.Item2);
-            return Task.FromResult(dict);
+            return dict;
         }
     }
 }

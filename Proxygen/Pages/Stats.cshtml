@@ -1,0 +1,38 @@
+﻿@page
+@model Stats
+
+@{
+    ViewData["Title"] = "Proxygen";
+}
+
+<div id="surround">
+    <div id="content">
+        <h1>Request Telemetrics</h1>
+        <h2>Total Requests Received</h2>
+        <table style="margin-left: auto; margin-right: auto; min-width: 70%">
+            <tr>
+                <td style="text-align: left">Last 7 days</td>
+                <td style="min-width: 2em"></td>
+                <td>@Model.RequestsLastSevenDays</td>
+            </tr>
+            <tr>
+                <td style="text-align: left">Last 24 hours</td>
+                <td style="min-width: 2em"></td>
+                <td>@Model.RequestLastTwentyFourHours</td>
+            </tr>
+        </table>
+        <h2>Failed Requests</h2>
+        <table style="margin-left: auto; margin-right: auto; min-width: 70%">
+            <tr>
+                <td style="text-align: left">Last 7 days</td>
+                <td style="min-width: 2em"></td>
+                <td>@Model.FailLastSevenDays</td>
+            </tr>
+            <tr>
+                <td style="text-align: left">Last 24 hours</td>
+                <td style="min-width: 2em"></td>
+                <td>@Model.FailLastTwentyFourHours</td>
+            </tr>
+        </table>
+    </div>
+</div>

@@ -1,21 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace SharedModel.Model
 {
     public class CardContext : DbContext
     {
-        private readonly IConfiguration _configuration;
-
-        public CardContext(IConfiguration configuration)
+        public CardContext(DbContextOptions<CardContext> options) : base(options)
         {
-            _configuration = configuration;
         }
 
         public DbSet<Card> Cards { get; init; } = null!;
         public DbSet<NameIndex> Index { get; init; } = null!;
 
         public DbSet<Update> Updates { get; init; } = null!;
+
+        public DbSet<Record> Records { get; init; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,12 +30,6 @@ namespace SharedModel.Model
                 .HasOne(i => i.Card)
                 .WithMany()
                 .IsRequired();
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            var connectionString = _configuration.GetConnectionString("Database");
-            optionsBuilder.UseNpgsql(connectionString);
         }
     }
 }

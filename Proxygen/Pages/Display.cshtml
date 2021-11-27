@@ -93,11 +93,11 @@ else
         case SharedModel.Model.Layout.Flip:
         {
             <div class="card_frame">
-                @{ RenderFace(card.Faces[0], "card_inner flip_top"); }
+                @{ RenderFace(card.Faces.First(), "card_inner flip_top"); }
                 <div class="spacer"></div>
                 <hr class="flip_divider"/>
                 <div class="spacer"></div>
-                @{ RenderFace(card.Faces[1], "card_inner flip_bottom"); }
+                @{ RenderFace(card.Faces.Skip(1).First(), "card_inner flip_bottom"); }
             </div>
             break;
         }

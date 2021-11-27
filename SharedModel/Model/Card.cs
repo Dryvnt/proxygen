@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace SharedModel.Model
 {
@@ -10,12 +11,14 @@ namespace SharedModel.Model
 
         public string Name { get; init; } = null!;
         public Layout Layout { get; init; }
-        public List<Face> Faces { get; init; } = null!;
+        public ICollection<Face> Faces { get; set; } = null!;
+
+        public ICollection<Record> Records { get; init; } = null!;
 
         // Underlying DB representation has no 
         public void SortFaces()
         {
-            Faces.Sort((a, b) => a.Sequence - b.Sequence);
+            Faces = Faces.OrderBy(face => face.Sequence).ToList();
         }
 
         public override string ToString()
