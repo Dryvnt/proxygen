@@ -3,13 +3,16 @@ WORKDIR /app
 
 COPY *.sln ./
 COPY Proxygen/*.csproj ./Proxygen/
+COPY Update/*.csproj ./Update/
+COPY SharedModel/*.csproj ./SharedModel/
 COPY Test/*.csproj ./Test/
 COPY Cli/*.csproj ./Cli/
 RUN dotnet restore
 
 COPY Cli Cli
 COPY Proxygen Proxygen
-COPY Test Test
+COPY Update Update
+COPY SharedModel SharedModel
 RUN dotnet publish Proxygen -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
