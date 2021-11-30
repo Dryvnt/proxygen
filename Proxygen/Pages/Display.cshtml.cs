@@ -27,8 +27,18 @@ namespace Proxygen.Pages
         public async Task<IActionResult> OnGetAsync(string? decklist)
         {
             decklist ??= "";
+            using var scope = _logger.BeginScope(new { Decklist = decklist.Replace("\r", "").Replace("\n", "\\n") });
 
-            var data = await Parser.ParseDecklist(decklist);
+            IDictionary<string, int> data;
+            try
+            {
+                data = await Parser.ParseDecklist(decklist);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Decklist parsing failed");
+                throw;
+            }
 
             var (missedNames, cardLookup) = CardLookup(data.Keys);
             foreach (var name in missedNames) UnrecognizedCards.Add(name);
