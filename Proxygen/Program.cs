@@ -20,11 +20,8 @@ builder.Services.Configure<RouteOptions>(options =>
 var connectionString = builder.Configuration.GetConnectionString("Database");
 builder.Services.AddDbContext<CardContext>(options => options.UseNpgsql(connectionString));
 
-if (builder.Configuration.GetValue<bool>("Updater:Enabled"))
-{
-    builder.Services.AddHttpClient();
-    builder.Services.AddHostedService<Worker>();
-}
+builder.Services.AddHttpClient();
+builder.Services.AddHostedService<Worker>();
 
 var app = builder.Build();
 

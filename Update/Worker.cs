@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -17,15 +18,23 @@ namespace Update
 {
     public class Worker : BackgroundService
     {
+        private readonly bool _enabled;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<Worker> _logger;
+        private readonly TimeSpan _minimumWait;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
         private readonly TimeSpan _updateFrequency = TimeSpan.FromDays(1);
 
-        public Worker(IServiceScopeFactory serviceScopeFactory, ILogger<Worker> logger,
+        public Worker(IConfiguration configuration, IServiceScopeFactory serviceScopeFactory, ILogger<Worker> logger,
             IHttpClientFactory httpClientFactory)
         {
+            var conf = configuration.GetSection("Updater");
+            _enabled = conf?.GetValue<bool?>("Enabled") ?? false;
+
+            var minimumWaitSeconds = conf?.GetValue<int?>("MinimumDelay") ?? 0;
+            _minimumWait = TimeSpan.FromSeconds(minimumWaitSeconds);
+
             _serviceScopeFactory = serviceScopeFactory;
             _logger = logger;
             _httpClientFactory = httpClientFactory;
@@ -46,7 +55,7 @@ namespace Update
 
             var latest = await context.Updates.OrderBy(u => u.When).LastOrDefaultAsync(stoppingToken);
 
-            if (latest is null) return TimeSpan.Zero;
+            if (latest is null) return _minimumWait;
 
             if (latest.Status is UpdateStatus.Begun)
             {
@@ -58,7 +67,7 @@ namespace Update
             var timeSinceLatest = DateTime.UtcNow - latest.When;
 
             var untilNext = _updateFrequency - timeSinceLatest;
-            return untilNext < TimeSpan.Zero ? TimeSpan.Zero : untilNext;
+            return untilNext < _minimumWait ? _minimumWait : untilNext;
         }
 
         private async IAsyncEnumerable<JsonCard> FetchData([EnumeratorCancellation] CancellationToken stoppingToken)
@@ -135,6 +144,8 @@ namespace Update
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             await WaitUntilMigrated(stoppingToken);
+
+            if (!_enabled) return;
 
             while (!stoppingToken.IsCancellationRequested)
             {
