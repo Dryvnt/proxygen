@@ -34,5 +34,15 @@
                 <td>@Model.FailLastTwentyFourHours</td>
             </tr>
         </table>
+        <h1>Update History</h1>
+        <table style="margin-left: auto; margin-right: auto; min-width: 70%">
+            @foreach (var update in Model.LastSevenUpdates)
+            {
+                <tr>
+                    <td>@update.When</td>
+                    <td>@update.Status</td>
+                </tr>
+            }
+        </table>
     </div>
 </div>

@@ -7,9 +7,11 @@ public class Stats : PageModel
 {
     private readonly CardContext _cardContext;
     private readonly ILogger<Stats> _logger;
-    public int FailLastSevenDays;
 
+    public int FailLastSevenDays;
     public int FailLastTwentyFourHours;
+
+    public List<SharedModel.Model.Update> LastSevenUpdates;
 
     public int RequestLastTwentyFourHours;
     public int RequestsLastSevenDays;
@@ -31,6 +33,8 @@ public class Stats : PageModel
 
         FailLastSevenDays = lastSevenDays.Count(r => r.UnrecognizedCards.Any());
         FailLastTwentyFourHours = lastTwentyFourHours.Count(r => r.UnrecognizedCards.Any());
+
+        LastSevenUpdates = _cardContext.Updates.OrderByDescending(u => u.When).Take(1).ToList();
 
         return Task.CompletedTask;
     }
