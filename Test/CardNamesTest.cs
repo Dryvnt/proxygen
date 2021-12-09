@@ -4,32 +4,31 @@ using SharedModel.Model;
 using Update;
 using Xunit;
 
-namespace Test
+namespace Test;
+
+public class CardNamesTest
 {
-    public class CardNamesTest
+    [Fact]
+    public void Basic()
     {
-        [Fact]
-        public void Basic()
+        var card = new Card
         {
-            var card = new Card
+            Name = "Foobar",
+            Faces = new List<Face>
             {
-                Name = "Foobar",
-                Faces = new List<Face>
+                new()
                 {
-                    new()
-                    {
-                        Name = "Foo",
-                    },
-                    new()
-                    {
-                        Name = "Bar",
-                    },
+                    Name = "Foo",
                 },
-            };
+                new()
+                {
+                    Name = "Bar",
+                },
+            },
+        };
 
-            var expected = new[] { "foobar", "foo", "bar" }.Select(Names.Sanitize);
+        var expected = new[] { "foobar", "foo", "bar" }.Select(Names.Sanitize);
 
-            Assert.Equal(expected, Names.CardNames(card));
-        }
+        Assert.Equal(expected, Names.CardNames(card));
     }
 }

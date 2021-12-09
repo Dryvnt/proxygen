@@ -1,19 +1,17 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace SharedModel.Model
+namespace SharedModel.Model;
+
+public enum UpdateStatus
 {
-    public enum UpdateStatus
-    {
-        Begun = 0,
-        Success = 1,
-        Failure = 2,
-    }
+    Begun = 0,
+    Success = 1,
+    Failure = 2,
+}
 
-    public class Update
-    {
-        [Key] public Guid Id { get; init; }
-        public DateTime When { get; init; }
-        public UpdateStatus Status { get; set; }
-    }
+public class Update
+{
+    [Key] public Guid Id { get; init; }
+    public DateTime When { get; init; }
+    public UpdateStatus Status { get; set; }
 }

@@ -1,16 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SharedModel.Model
+namespace SharedModel.Model;
+
+public class NameIndex
 {
-    public class NameIndex
+    [Key] public string SanitizedName { get; init; } = null!;
+
+    public Card Card { get; init; } = null!;
+
+    public override string ToString()
     {
-        [Key] public string SanitizedName { get; init; } = null!;
-
-        public Card Card { get; init; } = null!;
-
-        public override string ToString()
-        {
-            return $"{nameof(NameIndex)} ({nameof(SanitizedName)}: {SanitizedName}, {nameof(Card)}: {Card})";
-        }
+        return $"{nameof(NameIndex)} ({nameof(SanitizedName)}: {SanitizedName}, {nameof(Card)}: {Card})";
     }
 }

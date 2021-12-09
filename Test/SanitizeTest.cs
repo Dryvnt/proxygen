@@ -6,40 +6,39 @@ using System.Text.Json;
 using Update;
 using Xunit;
 
-namespace Test
+namespace Test;
+
+public class SanitizeTest
 {
-    public class SanitizeTest
+    public static TheoryData<string> AllCardNames
     {
-        public static TheoryData<string> AllCardNames
+        get
         {
-            get
-            {
-                var jsonRaw = File.OpenRead("all-names.json");
-                var names = JsonSerializer.Deserialize<List<string>>(jsonRaw);
-                Debug.Assert(names is not null);
-                var data = new TheoryData<string>();
-                foreach (var name in names) data.Add(name);
-                return data;
-            }
+            var jsonRaw = File.OpenRead("all-names.json");
+            var names = JsonSerializer.Deserialize<List<string>>(jsonRaw);
+            Debug.Assert(names is not null);
+            var data = new TheoryData<string>();
+            foreach (var name in names) data.Add(name);
+            return data;
         }
+    }
 
-        [Theory]
-        [InlineData("Snapcaster Mage", "snapcastermage")]
-        [InlineData("Jace, the Mind Sculptor", "jacethemindsculptor")]
-        [InlineData("Fire // Ice", "fireice")]
-        public void Basic(string name, string expected)
-        {
-            Assert.Equal(expected, Names.Sanitize(name));
-        }
+    [Theory]
+    [InlineData("Snapcaster Mage", "snapcastermage")]
+    [InlineData("Jace, the Mind Sculptor", "jacethemindsculptor")]
+    [InlineData("Fire // Ice", "fireice")]
+    public void Basic(string name, string expected)
+    {
+        Assert.Equal(expected, Names.Sanitize(name));
+    }
 
-        [Theory(Skip = "Long runtime. Only run manually.")]
-        [MemberData(nameof(AllCardNames))]
-        public void AlwaysAscii(string name)
-        {
-            var sanitized = Names.Sanitize(name);
+    [Theory(Skip = "Long runtime. Only run manually.")]
+    [MemberData(nameof(AllCardNames))]
+    public void AlwaysAscii(string name)
+    {
+        var sanitized = Names.Sanitize(name);
 
-            // Weird way to assert string is ascii
-            Assert.Equal(sanitized.Length, Encoding.UTF8.GetByteCount(sanitized));
-        }
+        // Weird way to assert string is ascii
+        Assert.Equal(sanitized.Length, Encoding.UTF8.GetByteCount(sanitized));
     }
 }

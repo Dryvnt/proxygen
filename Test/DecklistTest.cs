@@ -6,31 +6,30 @@ using Proxygen;
 using Update;
 using Xunit;
 
-namespace Test
+namespace Test;
+
+public class DecklistTest
 {
-    public class DecklistTest
-    {
-        public static TheoryData<string, IEnumerable<(string, int)>> ExampleDecklists =>
-            new()
-            {
-                { "", Array.Empty<(string, int)>() },
-                { "Snapcaster Mage", new[] { ("Snapcaster Mage", 1) } },
-                { "Snapcaster Mage\n", new[] { ("Snapcaster Mage", 1) } },
-                { "\n\n\n\nSnapcaster Mage\n\n\n\n\n", new[] { ("Snapcaster Mage", 1) } },
-                { "2 Snapcaster Mage", new[] { ("Snapcaster Mage", 2) } },
-                { "2x Snapcaster Mage", new[] { ("Snapcaster Mage", 2) } },
-                { "3 Island\nPonder\nFire // Ice", new[] { ("Island", 3), ("Ponder", 1), ("Fire // Ice", 1) } },
-            };
-
-        [Theory]
-        [MemberData(nameof(ExampleDecklists))]
-        public async Task Basic(string decklist, IEnumerable<(string, int)> expected)
+    public static TheoryData<string, IEnumerable<(string, int)>> ExampleDecklists =>
+        new()
         {
-            var parsedExpected = expected.ToDictionary(p => Names.Sanitize(p.Item1), p => p.Item2);
+            { "", Array.Empty<(string, int)>() },
+            { "Snapcaster Mage", new[] { ("Snapcaster Mage", 1) } },
+            { "Snapcaster Mage\n", new[] { ("Snapcaster Mage", 1) } },
+            { "\n\n\n\nSnapcaster Mage\n\n\n\n\n", new[] { ("Snapcaster Mage", 1) } },
+            { "2 Snapcaster Mage", new[] { ("Snapcaster Mage", 2) } },
+            { "2x Snapcaster Mage", new[] { ("Snapcaster Mage", 2) } },
+            { "3 Island\nPonder\nFire // Ice", new[] { ("Island", 3), ("Ponder", 1), ("Fire // Ice", 1) } },
+        };
 
-            var parsed = await Parser.ParseDecklist(decklist);
+    [Theory]
+    [MemberData(nameof(ExampleDecklists))]
+    public async Task Basic(string decklist, IEnumerable<(string, int)> expected)
+    {
+        var parsedExpected = expected.ToDictionary(p => Names.Sanitize(p.Item1), p => p.Item2);
 
-            Assert.Equal(parsedExpected, parsed);
-        }
+        var parsed = await Parser.ParseDecklist(decklist);
+
+        Assert.Equal(parsedExpected, parsed);
     }
 }
