@@ -34,7 +34,7 @@ public class Stats : PageModel
         FailLastSevenDays = lastSevenDays.Count(r => r.UnrecognizedCards.Any());
         FailLastTwentyFourHours = lastTwentyFourHours.Count(r => r.UnrecognizedCards.Any());
 
-        LastSevenUpdates = _cardContext.Updates.OrderByDescending(u => u.When).Take(1).ToList();
+        LastSevenUpdates = _cardContext.Updates.OrderByDescending(u => u.When).Take(7).ToList();
 
         return Task.CompletedTask;
     }
