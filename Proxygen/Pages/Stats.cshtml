@@ -1,4 +1,5 @@
 ﻿@page
+@using System.Globalization
 @model Stats
 
 @{
@@ -36,11 +37,17 @@
         </table>
         <h1>Update History</h1>
         <table style="margin-left: auto; margin-right: auto; min-width: 70%">
+            <tr>
+                <th>Time</th>
+                <th></th>
+                <th>Status</th>
+            </tr>
             @foreach (var update in Model.LastSevenUpdates)
             {
                 <tr>
-                    <td>@update.When</td>
-                    <td>@update.Status</td>
+                    <td style="font-family: monospace">@update.When.ToString("O", CultureInfo.InvariantCulture)</td>
+                    <td style="width: 10%"></td>
+                    <td style="font-family: monospace">@update.Status</td>
                 </tr>
             }
         </table>
