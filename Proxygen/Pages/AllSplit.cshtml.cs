@@ -19,6 +19,6 @@ public class AllSplit : PageModel
     {
         var allSplitNames = _cardContext.Cards.Where(c => c.Layout == Layout.Split).Select(c => c.Name);
         var decklist = string.Join("\n", allSplitNames);
-        return RedirectToPage("Display", new { Decklist = decklist });
+        return RedirectToPage(nameof(Display), new { Decklist = decklist });
     }
 }

@@ -19,6 +19,6 @@ public class AllFlip : PageModel
     {
         var allFlipNames = _cardContext.Cards.Where(c => c.Layout == Layout.Flip).Select(c => c.Name);
         var decklist = string.Join("\n", allFlipNames);
-        return RedirectToPage("Display", new { Decklist = decklist });
+        return RedirectToPage(nameof(Display), new { Decklist = decklist });
     }
 }
