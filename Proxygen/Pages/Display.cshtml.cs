@@ -7,9 +7,9 @@ namespace Proxygen.Pages;
 
 public class Display : PageModel
 {
+    private const int CardLimit = 1000;
     private readonly CardContext _cardContext;
     private readonly ILogger<Display> _logger;
-    public HashSet<string> UnrecognizedCards = new();
 
     public Display(ILogger<Display> logger, CardContext cardContext)
     {
@@ -21,31 +21,15 @@ public class Display : PageModel
 
     public async Task<IActionResult> OnGetAsync(string? decklist)
     {
-        decklist ??= "";
-        using var scope = _logger.BeginScope(new { Decklist = decklist.Replace("\r", "").Replace("\n", "\\n") });
+        if (decklist is null)
+            return BadRequest("No decklist");
 
-        IDictionary<string, int> data;
-        try
-        {
-            data = await Parser.ParseDecklist(decklist);
-        }
-        catch (Exception)
-        {
-            _logger.LogError("Decklist parsing failed");
-            throw;
-        }
+        var data = await Parser.ParseDecklist(decklist);
+
+        if (data.Keys.Count >= CardLimit || data.Values.Sum() >= CardLimit)
+            return BadRequest("Too many cards");
 
         var (missedNames, cardLookup) = CardLookup(data.Keys);
-        foreach (var name in missedNames) UnrecognizedCards.Add(name);
-
-        foreach (var (name, amount) in data)
-        {
-            if (missedNames.Contains(name)) continue;
-            var card = cardLookup[name];
-            // Sort faces for aesthetic value
-            card.SortFaces();
-            for (var i = 0; i < amount; i++) Cards.Add(card);
-        }
 
         var record = new Record
         {
@@ -57,6 +41,17 @@ public class Display : PageModel
 
         await _cardContext.AddAsync(record);
         await _cardContext.SaveChangesAsync();
+
+        if (missedNames.Any())
+            return BadRequest($"Unrecognized cards:\n{string.Join("\n", missedNames)}");
+
+        foreach (var (name, amount) in data)
+        {
+            var card = cardLookup[name];
+            // Sort faces for aesthetic value
+            card.SortFaces();
+            Cards.AddRange(Enumerable.Repeat(card, amount));
+        }
 
         return Page();
     }

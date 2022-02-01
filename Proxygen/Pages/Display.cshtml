@@ -42,24 +42,6 @@
 
 }
 
-@if (Model.UnrecognizedCards.Any())
-{
-    <div class="card_frame">
-        @{
-            var errorFace = new Face
-            {
-                CardId = Guid.Empty,
-                Name = "Proxygen Error",
-                ManaCost = "{W}{T}{F}",
-                OracleText = string.Join("\n", Model.UnrecognizedCards),
-                TypeLine = "Unrecognized Cards",
-            };
-            RenderFace(errorFace);
-        }
-    </div>
-}
-else
-{
 @foreach (var card in Model.Cards)
 {
     @switch (card.Layout)
@@ -104,5 +86,4 @@ else
         default:
             throw new ArgumentOutOfRangeException();
     }
-}
 }

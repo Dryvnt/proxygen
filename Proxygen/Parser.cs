@@ -24,8 +24,15 @@ public static class Parser
             return Task.FromResult<IDictionary<string, int>>(new Dictionary<string, int>());
 
         var lines = Regex.Split(decklist.Trim(), "\r\n|\r|\n");
-        IDictionary<string, int> dict = lines.Select(Names.Sanitize).Select(ParseLine)
-            .ToDictionary(p => p.Item1, p => p.Item2);
+        IDictionary<string, int> dict = new Dictionary<string, int>();
+        foreach (var (name, amount) in lines.Select(Names.Sanitize).Select(ParseLine))
+        {
+            if (dict.TryGetValue(name, out var current))
+                dict[name] = current + amount;
+            else
+                dict[name] = amount;
+        }
+
         return Task.FromResult(dict);
     }
 }
