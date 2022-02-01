@@ -9,8 +9,7 @@ public static class DataMapping
         var layout = jsonCard.Layout switch
         {
             "normal" or "leveler" or "class" or "saga" or "planar" or "scheme" or "transform" or "meld" or
-                "modal_dfc" => Layout
-                    .Normal,
+                "modal_dfc" => Layout.Normal,
             "split" or "adventure" => Layout.Split,
             "flip" => Layout.Flip,
             _ => throw new NotImplementedException($"Unsupported card layout whitelisted? {jsonCard.Layout}"),
