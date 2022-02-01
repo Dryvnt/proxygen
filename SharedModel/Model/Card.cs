@@ -12,7 +12,7 @@ public class Card
 
     public ICollection<Record> Records { get; init; } = null!;
 
-    // Underlying DB representation has no 
+    // Underlying DB representation has no concept of order, so we dictate it here.
     public void SortFaces()
     {
         Faces = Faces.OrderBy(face => face.Sequence).ToList();
