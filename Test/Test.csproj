@@ -24,10 +24,4 @@
         <ProjectReference Include="..\Proxygen\Proxygen.csproj"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <None Update="all-names.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-    </ItemGroup>
-
 </Project>

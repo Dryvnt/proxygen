@@ -10,7 +10,7 @@ namespace Test;
 
 public class DecklistTest
 {
-    public static TheoryData<string, IEnumerable<(string, int)>> ExampleDecklists =>
+    public static TheoryData<string, IEnumerable<(string, int)>> ExampleDeckLists =>
         new()
         {
             { "", Array.Empty<(string, int)>() },
@@ -26,7 +26,7 @@ public class DecklistTest
         };
 
     [Theory]
-    [MemberData(nameof(ExampleDecklists))]
+    [MemberData(nameof(ExampleDeckLists))]
     public async Task Basic(string decklist, IEnumerable<(string, int)> expected)
     {
         var parsedExpected = expected.ToDictionary(p => Names.Sanitize(p.Item1), p => p.Item2);
