@@ -9,14 +9,14 @@ public static class DataMapping
         var layout = jsonCard.Layout switch
         {
             "normal"
-                or "leveler"
-                or "class"
-                or "saga"
-                or "planar"
-                or "scheme"
-                or "transform"
-                or "meld"
-                or "modal_dfc"
+            or "leveler"
+            or "class"
+            or "saga"
+            or "planar"
+            or "scheme"
+            or "transform"
+            or "meld"
+            or "modal_dfc"
                 => CardLayout.Normal,
             "split" or "adventure" => CardLayout.Split,
             "flip" => CardLayout.Flip,

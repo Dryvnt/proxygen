@@ -8,6 +8,5 @@ public record BulkInformationWrapper(
 
 public record BulkInformation(
     [property: JsonPropertyName("type")] string Type,
-    [property: JsonPropertyName("download_uri")]
-    Uri DownloadUri
+    [property: JsonPropertyName("download_uri")] Uri DownloadUri
 );

@@ -12,7 +12,8 @@ public enum UpdateStatusState
 
 public class UpdateStatus
 {
-    [Key] public int Id { get; init; }
+    [Key]
+    public int Id { get; init; }
     public required Instant Created { get; init; }
     public UpdateStatusState StatusState { get; set; }
 }

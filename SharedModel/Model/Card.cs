@@ -13,12 +13,14 @@ public enum CardLayout
 [Index(nameof(Name), IsUnique = true)]
 public sealed class Card
 {
-    [Key] public int Id { get; init; }
+    [Key]
+    public int Id { get; init; }
 
     public required Guid ScryfallId { get; init; }
 
     // "longest name ever" elemental is 141 characters, choose nearest power of two because why not
-    [StringLength(256)] public required string Name { get; init; }
+    [StringLength(256)]
+    public required string Name { get; init; }
 
     public required CardLayout CardLayout { get; init; }
     public ICollection<Face> Faces { get; set; } = new List<Face>();

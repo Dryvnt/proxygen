@@ -15,7 +15,8 @@ namespace SharedModel.Migrations
                 name: "Cards",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table
+                        .Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     ScryfallId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
@@ -24,13 +25,15 @@ namespace SharedModel.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cards", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "SearchRecords",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table
+                        .Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     When = table.Column<string>(type: "TEXT", nullable: false),
                     UnrecognizedCards = table.Column<string>(type: "TEXT", nullable: false)
@@ -38,13 +41,15 @@ namespace SharedModel.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SearchRecords", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "UpdateStatuses",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table
+                        .Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Created = table.Column<string>(type: "TEXT", nullable: false),
                     StatusState = table.Column<int>(type: "INTEGER", nullable: false)
@@ -52,17 +57,23 @@ namespace SharedModel.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UpdateStatuses", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "Face",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table
+                        .Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     CardId = table.Column<int>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
-                    OracleText = table.Column<string>(type: "TEXT", maxLength: 1024, nullable: true),
+                    OracleText = table.Column<string>(
+                        type: "TEXT",
+                        maxLength: 1024,
+                        nullable: true
+                    ),
                     TypeLine = table.Column<string>(type: "TEXT", maxLength: 64, nullable: true),
                     ManaCost = table.Column<string>(type: "TEXT", maxLength: 64, nullable: true),
                     Power = table.Column<string>(type: "TEXT", maxLength: 8, nullable: true),
@@ -77,14 +88,20 @@ namespace SharedModel.Migrations
                         column: x => x.CardId,
                         principalTable: "Cards",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "SanitizedCardNames",
                 columns: table => new
                 {
-                    SanitizedName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
+                    SanitizedName = table.Column<string>(
+                        type: "TEXT",
+                        maxLength: 256,
+                        nullable: false
+                    ),
                     CardId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -95,8 +112,10 @@ namespace SharedModel.Migrations
                         column: x => x.CardId,
                         principalTable: "Cards",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "CardSearchRecord",
@@ -107,63 +126,63 @@ namespace SharedModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CardSearchRecord", x => new { x.CardsId, x.SearchRecordsId });
+                    table.PrimaryKey(
+                        "PK_CardSearchRecord",
+                        x => new { x.CardsId, x.SearchRecordsId }
+                    );
                     table.ForeignKey(
                         name: "FK_CardSearchRecord_Cards_CardsId",
                         column: x => x.CardsId,
                         principalTable: "Cards",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Cascade
+                    );
                     table.ForeignKey(
                         name: "FK_CardSearchRecord_SearchRecords_SearchRecordsId",
                         column: x => x.SearchRecordsId,
                         principalTable: "SearchRecords",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cards_Name",
                 table: "Cards",
                 column: "Name",
-                unique: true);
+                unique: true
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_CardSearchRecord_SearchRecordsId",
                 table: "CardSearchRecord",
-                column: "SearchRecordsId");
+                column: "SearchRecordsId"
+            );
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Face_CardId",
-                table: "Face",
-                column: "CardId");
+            migrationBuilder.CreateIndex(name: "IX_Face_CardId", table: "Face", column: "CardId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SanitizedCardNames_CardId",
                 table: "SanitizedCardNames",
-                column: "CardId");
+                column: "CardId"
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "CardSearchRecord");
+            migrationBuilder.DropTable(name: "CardSearchRecord");
 
-            migrationBuilder.DropTable(
-                name: "Face");
+            migrationBuilder.DropTable(name: "Face");
 
-            migrationBuilder.DropTable(
-                name: "SanitizedCardNames");
+            migrationBuilder.DropTable(name: "SanitizedCardNames");
 
-            migrationBuilder.DropTable(
-                name: "UpdateStatuses");
+            migrationBuilder.DropTable(name: "UpdateStatuses");
 
-            migrationBuilder.DropTable(
-                name: "SearchRecords");
+            migrationBuilder.DropTable(name: "SearchRecords");
 
-            migrationBuilder.DropTable(
-                name: "Cards");
+            migrationBuilder.DropTable(name: "Cards");
         }
     }
 }
