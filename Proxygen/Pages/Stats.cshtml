@@ -45,9 +45,9 @@
             @foreach (var update in Model.LastSevenUpdates)
             {
                 <tr>
-                    <td style="font-family: monospace">@update.When.ToString("O", CultureInfo.InvariantCulture)</td>
+                    <td style="font-family: monospace">@update.Created.ToString("O", CultureInfo.InvariantCulture)</td>
                     <td style="width: 10%"></td>
-                    <td style="font-family: monospace">@update.Status</td>
+                    <td style="font-family: monospace">@update.StatusState</td>
                 </tr>
             }
         </table>

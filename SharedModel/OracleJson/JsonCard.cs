@@ -2,7 +2,7 @@
 
 namespace SharedModel.OracleJson;
 
-public record JsonCard(
+public sealed record JsonCard(
     [property: JsonPropertyName("id")] Guid Id,
     [property: JsonPropertyName("name")] string Name,
     [property: JsonPropertyName("type_line")]

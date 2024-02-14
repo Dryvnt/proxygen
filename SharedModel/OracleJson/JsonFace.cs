@@ -2,7 +2,7 @@
 
 namespace SharedModel.OracleJson;
 
-public record JsonFace(
+public sealed record JsonFace(
     [property: JsonPropertyName("name")] string Name,
     [property: JsonPropertyName("type_line")]
     string TypeLine,

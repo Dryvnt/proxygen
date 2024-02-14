@@ -8,7 +8,8 @@ public static class Parser
     private static (string, int) ParseLine(string line)
     {
         var matches = Regex.Match(line, @"^(([0-9]+)x?)?([a-zA-Z0-9\s]+)$", RegexOptions.Compiled);
-        if (!matches.Success) throw new ArgumentException($"Line did not match {line}", nameof(line));
+        if (!matches.Success)
+            throw new ArgumentException($"Line did not match {line}", nameof(line));
         var amountGroup = matches.Groups[2];
         var nameGroup = matches.Groups[3];
 

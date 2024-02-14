@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SharedModel.Model;
 using Update;
@@ -13,17 +14,13 @@ public class CardNamesTest
     {
         var card = new Card
         {
+            ScryfallId = Guid.NewGuid(),
+            CardLayout = CardLayout.Normal,
             Name = "Foobar",
             Faces = new List<Face>
             {
-                new()
-                {
-                    Name = "Foo",
-                },
-                new()
-                {
-                    Name = "Bar",
-                },
+                new() { Name = "Foo" },
+                new() { Name = "Bar" },
             },
         };
 

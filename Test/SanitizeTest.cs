@@ -18,7 +18,8 @@ public class SanitizeTest
             var names = JsonSerializer.Deserialize<List<string>>(jsonRaw);
             Debug.Assert(names is not null);
             var data = new TheoryData<string>();
-            foreach (var name in names) data.Add(name);
+            foreach (var name in names)
+                data.Add(name);
             return data;
         }
     }

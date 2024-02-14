@@ -44,9 +44,9 @@
 
 @foreach (var card in Model.Cards)
 {
-    @switch (card.Layout)
+    @switch (card.CardLayout)
     {
-        case SharedModel.Model.Layout.Normal:
+        case CardLayout.Normal:
         {
             @foreach (var face in card.Faces)
             {
@@ -54,9 +54,10 @@
                     @{ RenderFace(face); }
                 </div>
             }
+
             break;
         }
-        case SharedModel.Model.Layout.Split:
+        case CardLayout.Split:
         {
             <div class="card_frame">
                 @foreach (var face in card.Faces)
@@ -72,7 +73,7 @@
             </div>
             break;
         }
-        case SharedModel.Model.Layout.Flip:
+        case CardLayout.Flip:
         {
             <div class="card_frame">
                 @{ RenderFace(card.Faces.First(), "card_inner flip_top"); }

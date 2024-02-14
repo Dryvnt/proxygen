@@ -13,7 +13,7 @@ builder.Services.Configure<RouteOptions>(options =>
 });
 
 var connectionString = builder.Configuration.GetConnectionString("Database");
-builder.Services.AddDbContext<CardContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<ProxygenContext>(options => options.UseSqlite(connectionString));
 
 builder.Services.AddHttpClient();
 builder.Services.AddHostedService<Worker>();
@@ -23,7 +23,9 @@ var app = builder.Build();
 // Ensure DB is migrated
 await using (var serviceScope = app.Services.CreateAsyncScope())
 {
-    await using (var cardContext = serviceScope.ServiceProvider.GetRequiredService<CardContext>())
+    await using (
+        var cardContext = serviceScope.ServiceProvider.GetRequiredService<ProxygenContext>()
+    )
     {
         await cardContext.Database.MigrateAsync();
     }

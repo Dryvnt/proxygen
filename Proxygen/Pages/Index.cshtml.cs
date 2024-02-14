@@ -26,10 +26,7 @@ public class IndexModel : PageModel
 
     public string Decklist = string.Join("\n", _interestingCards);
 
-    public IndexModel(ILogger<IndexModel> logger)
-    {
-        _logger = logger;
-    }
+    public IndexModel(ILogger<IndexModel> logger) => _logger = logger;
 
     public void OnGet()
     {

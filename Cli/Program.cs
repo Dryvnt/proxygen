@@ -11,11 +11,9 @@ namespace Cli;
 
 internal class Program
 {
-    private static async Task<ICollection<JsonCard>> ReadJson(Stream input)
-    {
-        return await JsonSerializer.DeserializeAsync<List<JsonCard>>(input) ??
-               throw new NotImplementedException();
-    }
+    private static async Task<ICollection<JsonCard>> ReadJson(Stream input) =>
+        await JsonSerializer.DeserializeAsync<List<JsonCard>>(input)
+        ?? throw new NotImplementedException();
 
     /// <summary>
     ///     Simple tool for importing an oracle json dump from Scryfall into the database
@@ -29,7 +27,7 @@ internal class Program
         var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
         var connectionString = config.GetConnectionString("Database");
 
-        services.AddDbContext<CardContext>(options => options.UseNpgsql(connectionString));
+        services.AddDbContext<ProxygenContext>(options => options.UseSqlite(connectionString));
         var provider = services.BuildServiceProvider();
         var stoppingToken = CancellationToken.None;
 
@@ -43,13 +41,18 @@ internal class Program
         {
             logger.LogInformation("Writing filtered JSON to file");
             await using var filterOut = filterTo.OpenWrite();
-            await JsonSerializer.SerializeAsync(filterOut, jsonCards, cancellationToken: stoppingToken);
+            await JsonSerializer.SerializeAsync(
+                filterOut,
+                jsonCards,
+                cancellationToken: stoppingToken
+            );
         }
 
         var cards = Helpers.ConvertData(logger, jsonCards.ToAsyncEnumerable(), stoppingToken);
 
         await using var serviceScope = provider.CreateAsyncScope();
-        await using var context = serviceScope.ServiceProvider.GetRequiredService<CardContext>();
+        await using var context =
+            serviceScope.ServiceProvider.GetRequiredService<ProxygenContext>();
 
         Console.WriteLine("Migrating DB");
         await context.Database.MigrateAsync(stoppingToken);

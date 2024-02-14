@@ -6,18 +6,20 @@ namespace Proxygen.Pages;
 
 public class AllFlip : PageModel
 {
-    private readonly CardContext _cardContext;
     private readonly ILogger<AllFlip> _logger;
+    private readonly ProxygenContext _proxygenContext;
 
-    public AllFlip(ILogger<AllFlip> logger, CardContext cardContext)
+    public AllFlip(ILogger<AllFlip> logger, ProxygenContext proxygenContext)
     {
         _logger = logger;
-        _cardContext = cardContext;
+        _proxygenContext = proxygenContext;
     }
 
     public IActionResult OnGet()
     {
-        var allFlipNames = _cardContext.Cards.Where(c => c.Layout == Layout.Flip).Select(c => c.Name);
+        var allFlipNames = _proxygenContext
+            .Cards.Where(c => c.CardLayout == CardLayout.Flip)
+            .Select(c => c.Name);
         var decklist = string.Join("\n", allFlipNames);
         return RedirectToPage(nameof(Display), new { Decklist = decklist });
     }

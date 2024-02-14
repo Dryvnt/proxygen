@@ -19,7 +19,10 @@ public class DecklistTest
             { "\n\n\n\nSnapcaster Mage\n\n\n\n\n", new[] { ("Snapcaster Mage", 1) } },
             { "2 Snapcaster Mage", new[] { ("Snapcaster Mage", 2) } },
             { "2x Snapcaster Mage", new[] { ("Snapcaster Mage", 2) } },
-            { "3 Island\nPonder\nFire // Ice", new[] { ("Island", 3), ("Ponder", 1), ("Fire // Ice", 1) } },
+            {
+                "3 Island\nPonder\nFire // Ice",
+                new[] { ("Island", 3), ("Ponder", 1), ("Fire // Ice", 1) }
+            },
         };
 
     [Theory]

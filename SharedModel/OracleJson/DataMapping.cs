@@ -8,38 +8,48 @@ public static class DataMapping
     {
         var layout = jsonCard.Layout switch
         {
-            "normal" or "leveler" or "class" or "saga" or "planar" or "scheme" or "transform" or "meld" or
-                "modal_dfc" => Layout.Normal,
-            "split" or "adventure" => Layout.Split,
-            "flip" => Layout.Flip,
-            _ => throw new NotImplementedException($"Unsupported card layout whitelisted? {jsonCard.Layout}"),
+            "normal"
+                or "leveler"
+                or "class"
+                or "saga"
+                or "planar"
+                or "scheme"
+                or "transform"
+                or "meld"
+                or "modal_dfc"
+                => CardLayout.Normal,
+            "split" or "adventure" => CardLayout.Split,
+            "flip" => CardLayout.Flip,
+            _
+                => throw new NotImplementedException(
+                    $"Unsupported card layout whitelisted? {jsonCard.Layout}"
+                ),
         };
 
         var faces = new List<Face>();
         if (jsonCard.Faces?.Any() ?? false)
         {
-            var i = 0;
             foreach (var face in jsonCard.Faces)
             {
-                faces.Add(new Face
-                {
-                    Sequence = i,
-                    Name = face.Name,
-                    OracleText = face.OracleText,
-                    TypeLine = face.TypeLine,
-                    ManaCost = face.ManaCost,
-                    Power = face.Power,
-                    Toughness = face.Toughness,
-                    Loyalty = face.Loyalty,
-                });
-                i++;
+                faces.Add(
+                    new Face
+                    {
+                        Name = face.Name,
+                        OracleText = face.OracleText,
+                        TypeLine = face.TypeLine,
+                        ManaCost = face.ManaCost,
+                        Power = face.Power,
+                        Toughness = face.Toughness,
+                        Loyalty = face.Loyalty,
+                    }
+                );
             }
         }
         else
         {
-            faces.Add(new Face
+            faces.Add(
+                new Face
                 {
-                    Sequence = 0,
                     Name = jsonCard.Name,
                     OracleText = jsonCard.OracleText,
                     TypeLine = jsonCard.TypeLine,
@@ -51,6 +61,12 @@ public static class DataMapping
             );
         }
 
-        return new Card { Id = jsonCard.Id, Name = jsonCard.Name, Layout = layout, Faces = faces };
+        return new Card
+        {
+            ScryfallId = jsonCard.Id,
+            Name = jsonCard.Name,
+            CardLayout = layout,
+            Faces = faces,
+        };
     }
 }

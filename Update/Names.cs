@@ -21,6 +21,7 @@ public static class Names
     public static IEnumerable<string> CardNames(Card card)
     {
         yield return Sanitize(card.Name);
-        foreach (var face in card.Faces) yield return Sanitize(face.Name);
+        foreach (var face in card.Faces)
+            yield return Sanitize(face.Name);
     }
 }

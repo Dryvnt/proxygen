@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using NodaTime;
 using SharedModel.Model;
 
 namespace Proxygen.Pages;
@@ -8,13 +9,15 @@ namespace Proxygen.Pages;
 public class Display : PageModel
 {
     private const int CardLimit = 1000;
-    private readonly CardContext _cardContext;
+    private readonly IClock _clock;
     private readonly ILogger<Display> _logger;
+    private readonly ProxygenContext _proxygenContext;
 
-    public Display(ILogger<Display> logger, CardContext cardContext)
+    public Display(ILogger<Display> logger, ProxygenContext proxygenContext, IClock clock)
     {
         _logger = logger;
-        _cardContext = cardContext;
+        _proxygenContext = proxygenContext;
+        _clock = clock;
     }
 
     public List<Card> Cards { get; } = new();
@@ -31,16 +34,15 @@ public class Display : PageModel
 
         var (missedNames, cardLookup) = CardLookup(data.Keys);
 
-        var record = new Record
+        var record = new SearchRecord
         {
-            Id = Guid.NewGuid(),
-            When = DateTime.UtcNow,
+            When = _clock.GetCurrentInstant(),
             Cards = Cards,
             UnrecognizedCards = missedNames.ToList(),
         };
 
-        await _cardContext.AddAsync(record);
-        await _cardContext.SaveChangesAsync();
+        await _proxygenContext.AddAsync(record);
+        await _proxygenContext.SaveChangesAsync();
 
         if (missedNames.Any())
             return BadRequest($"Unrecognized cards:\n{string.Join("\n", missedNames)}");
@@ -58,8 +60,11 @@ public class Display : PageModel
 
     private (HashSet<string>, Dictionary<string, Card>) CardLookup(ICollection<string> names)
     {
-        var fetched = _cardContext.Index.Include(i => i.Card).ThenInclude(c => c.Faces)
-            .Where(i => names.Contains(i.SanitizedName)).ToDictionary(i => i.SanitizedName, i => i.Card);
+        var fetched = _proxygenContext
+            .SanitizedCardNames.Include(i => i.Card)
+            .ThenInclude(c => c.Faces)
+            .Where(i => names.Contains(i.SanitizedName))
+            .ToDictionary(i => i.SanitizedName, i => i.Card);
 
         // Ensure we got all names
         var missedNames = names.Except(fetched.Keys).ToHashSet();

@@ -1,24 +1,35 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace SharedModel.Model;
 
-public class Face
+public sealed class Face
 {
-    public Guid CardId { get; init; }
-    public int Sequence { get; init; }
-    public string Name { get; init; } = null!;
-    public string? OracleText { get; init; }
-    public string TypeLine { get; init; } = null!;
-    public string? ManaCost { get; init; }
-    public string? Power { get; init; }
-    public string? Toughness { get; init; }
-    public string? Loyalty { get; init; }
+    [Key] public int Id { get; init; }
+
+    public int CardId { get; init; }
+    public Card Card { get; init; } = null!;
+
+    [StringLength(256)] public required string Name { get; init; }
+
+    [StringLength(1024)] public string? OracleText { get; init; }
+
+    [StringLength(64)] public string? TypeLine { get; init; }
+
+    [StringLength(64)] public string? ManaCost { get; init; }
+
+    [StringLength(8)] public string? Power { get; init; }
+
+    [StringLength(8)] public string? Toughness { get; init; }
+
+    [StringLength(8)] public string? Loyalty { get; init; }
 
     public IEnumerable<string> ManaCostComponents
     {
         get
         {
-            if (ManaCost is null) yield break;
+            if (ManaCost is null)
+                yield break;
 
             foreach (Match match in Regex.Matches(ManaCost, @"\{.*?\}"))
             {
@@ -29,11 +40,5 @@ public class Face
                     yield return part;
             }
         }
-    }
-
-    public override string ToString()
-    {
-        return
-            $"{nameof(Name)}: {Name}, {nameof(OracleText)}: {OracleText}, {nameof(TypeLine)}: {TypeLine}, {nameof(ManaCost)}: {ManaCost}, {nameof(Power)}: {Power}, {nameof(Toughness)}: {Toughness}, {nameof(Loyalty)}: {Loyalty}";
     }
 }
