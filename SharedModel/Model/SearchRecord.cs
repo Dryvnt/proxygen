@@ -9,6 +9,6 @@ public sealed class SearchRecord
     public int Id { get; init; }
 
     public required Instant When { get; init; }
-    public required ICollection<Card> Cards { get; init; }
-    public required ICollection<string> UnrecognizedCards { get; init; }
+    public ICollection<Card> Cards { get; init; } = null!;
+    public List<string> UnrecognizedCards { get; init; } = [];
 }

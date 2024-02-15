@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,6 +33,7 @@ public sealed class Face
     [StringLength(8)]
     public string? Loyalty { get; init; }
 
+    [NotMapped]
     public IEnumerable<string> ManaCostComponents
     {
         get

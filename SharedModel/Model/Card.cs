@@ -22,7 +22,7 @@ public sealed class Card
     public required string Name { get; init; }
 
     public required CardLayout CardLayout { get; init; }
-    public required ICollection<SanitizedCardName> SanitizedNames { get; init; }
+    public ICollection<SanitizedCardName> SanitizedNames { get; init; } = null!;
 
     public required bool IsFunny { get; init; }
 

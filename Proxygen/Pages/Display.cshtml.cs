@@ -20,6 +20,7 @@ public class Display : PageModel
         _clock = clock;
     }
 
+    public List<string> UnrecognizedCards { get; } = [];
     public List<Card> Cards { get; } = [];
 
     public async Task<IActionResult> OnGetAsync(
@@ -28,12 +29,9 @@ public class Display : PageModel
     )
     {
         if (decklist is null)
-            return BadRequest("No decklist");
+            return RedirectToPage("Index");
 
         var data = await Parser.ParseDecklist(decklist);
-
-        if (data.Keys.Count >= CardLimit || data.Values.Sum() >= CardLimit)
-            return BadRequest("Too many cards");
 
         var (missedNames, cardLookup) = await CardLookup(data.Keys, cancellationToken);
 
@@ -47,18 +45,17 @@ public class Display : PageModel
             Cards.AddRange(Enumerable.Repeat(card, amount));
         }
 
+        UnrecognizedCards.AddRange(missedNames);
+
         var record = new SearchRecord
         {
             When = _clock.GetCurrentInstant(),
             Cards = Cards,
-            UnrecognizedCards = missedNames.ToList(),
+            UnrecognizedCards = UnrecognizedCards.ToList(),
         };
 
         await _proxygenContext.AddAsync(record, cancellationToken);
         await _proxygenContext.SaveChangesAsync(cancellationToken);
-
-        if (missedNames.Count > 0)
-            return BadRequest($"Unrecognized cards:\n{string.Join("\n", missedNames)}");
 
         return Page();
     }

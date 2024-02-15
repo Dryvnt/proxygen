@@ -11,7 +11,7 @@ using SharedModel.Model;
 namespace SharedModel.Migrations
 {
     [DbContext(typeof(ProxygenContext))]
-    [Migration("20240215011233_InitialMigration")]
+    [Migration("20240215021602_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />

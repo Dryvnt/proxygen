@@ -1,4 +1,4 @@
-@page {
+﻿@page {
     margin: 10mm;
     size: A4;
 }
@@ -23,6 +23,10 @@ p {
      */
     width: 60mm;
     height: 85mm;
+    max-width: 60mm;
+    max-height: 85mm;
+    min-width: 60mm;
+    min-height: 85mm;
     padding: 2mm;
     border: 0.5mm solid black;
     float: left;
@@ -42,10 +46,6 @@ p {
     flex-flow: column nowrap;
     max-height: 100%;
     min-height: 0;
-}
-
-.spacer {
-    flex-grow: 1;
 }
 
 .flip_bottom {
@@ -75,17 +75,29 @@ p {
 }
 
 .name_mana_line {
-    flex-basis: 53%;
+    flex-basis: fit-content;
     display: flex;
 }
 
+.art_box {
+    flex-basis: 50%;
+}
+
 .type_line {
-    font-size: 95%;
     flex-basis: 3em;
+    font-size: 95%;
+}
+
+.oracle_box {
+    flex-basis: 40%;
 }
 
 .oracle_p {
     font-size: 85%;
+}
+
+.power_toughness, .loyalty {
+    flex-basis: fit-content;
 }
 
 .power_toughness {

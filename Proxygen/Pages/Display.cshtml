@@ -6,6 +6,20 @@
     ViewData["Title"] = "Proxygen";
 }
 
+@if (Model.UnrecognizedCards.Count > 0)
+{
+    <div class="error_frame">
+        <p>Unrecognized cards</p>
+        <ul>
+            @foreach (var unrecognized in Model.UnrecognizedCards)
+            {
+                <li>@unrecognized</li>
+            }
+        </ul>
+    </div>
+    return;
+}
+
 @functions {
 
     private void RenderFace(Face face, string frameClass = "card_inner")
@@ -20,17 +34,21 @@
                     </div>
                 }
             </div>
+            @* The art box element is purely to assist the flex layout,
+                it is where the art would normally go, so having some space there feels right :) *@
+            <div class="art_box"></div>
             <p class="type_line">@face.TypeLine</p>
             @if (face.OracleText is not null)
             {
-                foreach (var line in face.OracleText.Split("\n"))
+                <div class="oracle_box">
+                @foreach (var line in face.OracleText.Split("\n"))
                 {
                     <p class="oracle_p">@line</p>
                 }
+                </div>
             }
             @if (face.Power is not null && face.Toughness is not null)
             {
-                <div class="spacer"></div>
                 <p class="power_toughness">@face.Power/@face.Toughness</p>
             }
             @if (face.Loyalty is not null)

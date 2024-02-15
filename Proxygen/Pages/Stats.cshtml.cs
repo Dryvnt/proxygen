@@ -1,49 +1,40 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using NodaTime;
 using SharedModel.Model;
 
 namespace Proxygen.Pages;
 
-public class Stats : PageModel
+public class Stats(ProxygenContext db, IClock clock) : PageModel
 {
-    private readonly IClock _clock;
-    private readonly ILogger<Stats> _logger;
-    private readonly ProxygenContext _proxygenContext;
+    public IReadOnlyCollection<UpdateStatus> LastSevenUpdates = Array.Empty<UpdateStatus>();
+    public IReadOnlyCollection<SearchRecord> LastSevenDays = Array.Empty<SearchRecord>();
+    public IReadOnlyCollection<SearchRecord> LastTwentyFourHours = Array.Empty<SearchRecord>();
 
-    public readonly List<UpdateStatus> LastSevenUpdates = new();
-
-    public int FailLastSevenDays;
-    public int FailLastTwentyFourHours;
-
-    public int RequestLastTwentyFourHours;
-    public int RequestsLastSevenDays;
-
-    public Stats(ILogger<Stats> logger, ProxygenContext proxygenContext, IClock clock)
+    public async Task<IActionResult> OnGetAsync()
     {
-        _logger = logger;
-        _proxygenContext = proxygenContext;
-        _clock = clock;
-    }
-
-    public Task OnGetAsync()
-    {
-        var now = _clock.GetCurrentInstant();
+        var now = clock.GetCurrentInstant();
         var oneWeekAgo = now.Minus(Duration.FromDays(7));
         var oneDayAgo = now.Minus(Duration.FromDays(1));
 
-        var lastSevenDays = _proxygenContext.SearchRecords.Where(r => r.When >= oneWeekAgo);
-        var lastTwentyFourHours = _proxygenContext.SearchRecords.Where(r => r.When >= oneDayAgo);
+        LastSevenDays = await db
+            .SearchRecords.Where(r => r.When >= oneWeekAgo)
+            .Include(r => r.Cards)
+            .AsNoTrackingWithIdentityResolution()
+            .ToArrayAsync();
+        LastTwentyFourHours = await db
+            .SearchRecords.Where(r => r.When >= oneDayAgo)
+            .Include(r => r.Cards)
+            .AsNoTrackingWithIdentityResolution()
+            .ToArrayAsync();
 
-        RequestsLastSevenDays = lastSevenDays.Count();
-        RequestLastTwentyFourHours = lastTwentyFourHours.Count();
+        LastSevenUpdates = await db
+            .UpdateStatuses.OrderByDescending(u => u.Created)
+            .Take(48)
+            .AsNoTracking()
+            .ToArrayAsync();
 
-        FailLastSevenDays = lastSevenDays.Count(r => r.UnrecognizedCards.Any());
-        FailLastTwentyFourHours = lastTwentyFourHours.Count(r => r.UnrecognizedCards.Any());
-
-        LastSevenUpdates.AddRange(
-            _proxygenContext.UpdateStatuses.OrderByDescending(u => u.Created).Take(7)
-        );
-
-        return Task.CompletedTask;
+        return Page();
     }
 }
