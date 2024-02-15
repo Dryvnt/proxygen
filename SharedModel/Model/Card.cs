@@ -10,29 +10,24 @@ public enum CardLayout
     Flip = 3, // Print each face on the same card, rotate the second face
 }
 
-[Index(nameof(Name), IsUnique = true)]
+[Index(nameof(Name))]
+[Index(nameof(Id))]
 public sealed class Card
 {
     [Key]
-    public int Id { get; init; }
-
-    public required Guid ScryfallId { get; init; }
+    public required Guid Id { get; init; }
 
     // "longest name ever" elemental is 141 characters, choose nearest power of two because why not
     [StringLength(256)]
     public required string Name { get; init; }
 
     public required CardLayout CardLayout { get; init; }
-    public ICollection<Face> Faces { get; set; } = new List<Face>();
+    public required ICollection<SanitizedCardName> SanitizedNames { get; init; }
 
-    public ICollection<SanitizedCardName> SanitizedCardNames { get; init; } =
-        new List<SanitizedCardName>();
+    public required bool IsFunny { get; init; }
 
-    public ICollection<SearchRecord> SearchRecords { get; init; } = new List<SearchRecord>();
+    public required ulong SourceDigest { get; set; }
+    public ICollection<Face> Faces { get; set; } = null!;
 
-    // Underlying DB representation has no concept of order, so we dictate it here.
-    public void SortFaces()
-    {
-        Faces = Faces.OrderBy(face => face.Id).ToList();
-    }
+    public ICollection<SearchRecord> SearchRecords { get; init; } = null!;
 }

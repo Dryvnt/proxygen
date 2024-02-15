@@ -4,18 +4,13 @@ namespace Update;
 
 public static class Names
 {
-    private static bool KeepChar(char c)
-    {
-        var strip = new[] { ' ', '/', ',', '\'', '-' };
-        return !strip.Contains(c);
-    }
+    private static readonly HashSet<char> KeepChar = [' ', '/', ',', '\'', '-',];
 
     public static string Sanitize(string name)
     {
         var lower = name.ToLowerInvariant();
 
-        var stripped = new string(lower.Where(KeepChar).ToArray());
-        return stripped;
+        return new string(lower.Where(c => !KeepChar.Contains(c)).ToArray());
     }
 
     public static IEnumerable<string> CardNames(Card card)

@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace SharedModel.Model;
 
+[Index(nameof(Name))]
+[PrimaryKey(nameof(CardId), nameof(Name))]
 public sealed class Face
 {
-    [Key]
-    public int Id { get; init; }
-
-    public int CardId { get; init; }
+    public required Guid CardId { get; init; }
     public Card Card { get; init; } = null!;
 
     [StringLength(256)]

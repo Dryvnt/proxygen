@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SharedModel.Migrations
 {
     /// <inheritdoc />
-    public partial class fooer : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,12 +15,11 @@ namespace SharedModel.Migrations
                 name: "Cards",
                 columns: table => new
                 {
-                    Id = table
-                        .Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    ScryfallId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
-                    CardLayout = table.Column<int>(type: "INTEGER", nullable: false)
+                    CardLayout = table.Column<int>(type: "INTEGER", nullable: false),
+                    IsFunny = table.Column<bool>(type: "INTEGER", nullable: false),
+                    SourceDigest = table.Column<ulong>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -64,10 +63,7 @@ namespace SharedModel.Migrations
                 name: "Face",
                 columns: table => new
                 {
-                    Id = table
-                        .Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    CardId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CardId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
                     OracleText = table.Column<string>(
                         type: "TEXT",
@@ -82,7 +78,7 @@ namespace SharedModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Face", x => x.Id);
+                    table.PrimaryKey("PK_Face", x => new { x.CardId, x.Name });
                     table.ForeignKey(
                         name: "FK_Face_Cards_CardId",
                         column: x => x.CardId,
@@ -97,16 +93,12 @@ namespace SharedModel.Migrations
                 name: "SanitizedCardNames",
                 columns: table => new
                 {
-                    SanitizedName = table.Column<string>(
-                        type: "TEXT",
-                        maxLength: 256,
-                        nullable: false
-                    ),
-                    CardId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Name = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
+                    CardId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SanitizedCardNames", x => x.SanitizedName);
+                    table.PrimaryKey("PK_SanitizedCardNames", x => new { x.CardId, x.Name });
                     table.ForeignKey(
                         name: "FK_SanitizedCardNames_Cards_CardId",
                         column: x => x.CardId,
@@ -121,7 +113,7 @@ namespace SharedModel.Migrations
                 name: "CardSearchRecord",
                 columns: table => new
                 {
-                    CardsId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CardsId = table.Column<Guid>(type: "TEXT", nullable: false),
                     SearchRecordsId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -147,12 +139,9 @@ namespace SharedModel.Migrations
                 }
             );
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Cards_Name",
-                table: "Cards",
-                column: "Name",
-                unique: true
-            );
+            migrationBuilder.CreateIndex(name: "IX_Cards_Id", table: "Cards", column: "Id");
+
+            migrationBuilder.CreateIndex(name: "IX_Cards_Name", table: "Cards", column: "Name");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CardSearchRecord_SearchRecordsId",
@@ -160,12 +149,12 @@ namespace SharedModel.Migrations
                 column: "SearchRecordsId"
             );
 
-            migrationBuilder.CreateIndex(name: "IX_Face_CardId", table: "Face", column: "CardId");
+            migrationBuilder.CreateIndex(name: "IX_Face_Name", table: "Face", column: "Name");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SanitizedCardNames_CardId",
+                name: "IX_SanitizedCardNames_Name",
                 table: "SanitizedCardNames",
-                column: "CardId"
+                column: "Name"
             );
         }
 

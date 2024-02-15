@@ -11,8 +11,8 @@ using SharedModel.Model;
 namespace SharedModel.Migrations
 {
     [DbContext(typeof(ProxygenContext))]
-    [Migration("20240214220359_fooer")]
-    partial class fooer
+    [Migration("20240215011233_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,8 +22,8 @@ namespace SharedModel.Migrations
 
             modelBuilder.Entity("CardSearchRecord", b =>
                 {
-                    b.Property<int>("CardsId")
-                        .HasColumnType("INTEGER");
+                    b.Property<Guid>("CardsId")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("SearchRecordsId")
                         .HasColumnType("INTEGER");
@@ -37,11 +37,14 @@ namespace SharedModel.Migrations
 
             modelBuilder.Entity("SharedModel.Model.Card", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("CardLayout")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsFunny")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
@@ -49,25 +52,26 @@ namespace SharedModel.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("ScryfallId")
-                        .HasColumnType("TEXT");
+                    b.Property<ulong>("SourceDigest")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
+                    b.HasIndex("Id");
+
+                    b.HasIndex("Name");
 
                     b.ToTable("Cards");
                 });
 
             modelBuilder.Entity("SharedModel.Model.Face", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.Property<Guid>("CardId")
+                        .HasColumnType("TEXT");
 
-                    b.Property<int>("CardId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Loyalty")
                         .HasMaxLength(8)
@@ -75,11 +79,6 @@ namespace SharedModel.Migrations
 
                     b.Property<string>("ManaCost")
                         .HasMaxLength(64)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("OracleText")
@@ -98,25 +97,25 @@ namespace SharedModel.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("CardId", "Name");
 
-                    b.HasIndex("CardId");
+                    b.HasIndex("Name");
 
                     b.ToTable("Face");
                 });
 
             modelBuilder.Entity("SharedModel.Model.SanitizedCardName", b =>
                 {
-                    b.Property<string>("SanitizedName")
+                    b.Property<Guid>("CardId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CardId")
-                        .HasColumnType("INTEGER");
+                    b.HasKey("CardId", "Name");
 
-                    b.HasKey("SanitizedName");
-
-                    b.HasIndex("CardId");
+                    b.HasIndex("Name");
 
                     b.ToTable("SanitizedCardNames");
                 });
@@ -187,7 +186,7 @@ namespace SharedModel.Migrations
             modelBuilder.Entity("SharedModel.Model.SanitizedCardName", b =>
                 {
                     b.HasOne("SharedModel.Model.Card", "Card")
-                        .WithMany("SanitizedCardNames")
+                        .WithMany("SanitizedNames")
                         .HasForeignKey("CardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -199,7 +198,7 @@ namespace SharedModel.Migrations
                 {
                     b.Navigation("Faces");
 
-                    b.Navigation("SanitizedCardNames");
+                    b.Navigation("SanitizedNames");
                 });
 #pragma warning restore 612, 618
         }

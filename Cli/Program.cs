@@ -4,15 +4,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SharedModel.Model;
-using SharedModel.OracleJson;
+using SharedModel.Scryfall;
 using Update;
 
 namespace Cli;
 
 internal class Program
 {
-    private static async Task<ICollection<JsonCard>> ReadJson(Stream input) =>
-        await JsonSerializer.DeserializeAsync<List<JsonCard>>(input)
+    private static async Task<ICollection<ScryfallCard>> ReadJson(Stream input) =>
+        await JsonSerializer.DeserializeAsync<List<ScryfallCard>>(input)
         ?? throw new NotImplementedException();
 
     /// <summary>
@@ -48,7 +48,9 @@ internal class Program
             );
         }
 
-        var cards = Helpers.ConvertData(logger, jsonCards.ToAsyncEnumerable(), stoppingToken);
+        var cards =
+            (IAsyncEnumerable<Card>)
+                DataMapping.FromJsonStream(jsonCards.ToAsyncEnumerable(), logger, stoppingToken);
 
         await using var serviceScope = provider.CreateAsyncScope();
         await using var context =

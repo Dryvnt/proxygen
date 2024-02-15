@@ -20,9 +20,12 @@ public class Display : PageModel
         _clock = clock;
     }
 
-    public List<Card> Cards { get; } = new();
+    public List<Card> Cards { get; } = [];
 
-    public async Task<IActionResult> OnGetAsync(string? decklist)
+    public async Task<IActionResult> OnGetAsync(
+        string? decklist,
+        CancellationToken cancellationToken
+    )
     {
         if (decklist is null)
             return BadRequest("No decklist");
@@ -32,7 +35,17 @@ public class Display : PageModel
         if (data.Keys.Count >= CardLimit || data.Values.Sum() >= CardLimit)
             return BadRequest("Too many cards");
 
-        var (missedNames, cardLookup) = CardLookup(data.Keys);
+        var (missedNames, cardLookup) = await CardLookup(data.Keys, cancellationToken);
+
+        foreach (var (name, amount) in data)
+        {
+            if (missedNames.Contains(name))
+                continue;
+
+            var card = cardLookup[name];
+            // Sort faces for aesthetic value
+            Cards.AddRange(Enumerable.Repeat(card, amount));
+        }
 
         var record = new SearchRecord
         {
@@ -41,32 +54,38 @@ public class Display : PageModel
             UnrecognizedCards = missedNames.ToList(),
         };
 
-        await _proxygenContext.AddAsync(record);
-        await _proxygenContext.SaveChangesAsync();
+        await _proxygenContext.AddAsync(record, cancellationToken);
+        await _proxygenContext.SaveChangesAsync(cancellationToken);
 
-        if (missedNames.Any())
+        if (missedNames.Count > 0)
             return BadRequest($"Unrecognized cards:\n{string.Join("\n", missedNames)}");
-
-        foreach (var (name, amount) in data)
-        {
-            var card = cardLookup[name];
-            // Sort faces for aesthetic value
-            card.SortFaces();
-            Cards.AddRange(Enumerable.Repeat(card, amount));
-        }
 
         return Page();
     }
 
-    private (HashSet<string>, Dictionary<string, Card>) CardLookup(ICollection<string> names)
+    private async Task<(HashSet<string>, Dictionary<string, Card>)> CardLookup(
+        ICollection<string> names,
+        CancellationToken cancellationToken = default
+    )
     {
-        var fetched = _proxygenContext
+        var sanitizedNames = await _proxygenContext
             .SanitizedCardNames.Include(i => i.Card)
             .ThenInclude(c => c.Faces)
-            .Where(i => names.Contains(i.SanitizedName))
-            .ToDictionary(i => i.SanitizedName, i => i.Card);
+            .Where(s => names.Contains(s.Name))
+            .ToArrayAsync(cancellationToken);
 
-        // Ensure we got all names
+        var fetched = new Dictionary<string, Card>();
+
+        // I HATE FUNNY CARDS - Makes us do this WEIRD data handling
+        foreach (var nameGroup in sanitizedNames.GroupBy(s => s.Name))
+        {
+            var candidates = nameGroup.AsEnumerable();
+            if (nameGroup.Count() > 1)
+                candidates = candidates.Where(c => !c.Card.IsFunny);
+            var candidate = candidates.First();
+            fetched[candidate.Name] = candidate.Card;
+        }
+
         var missedNames = names.Except(fetched.Keys).ToHashSet();
 
         return (missedNames, fetched);

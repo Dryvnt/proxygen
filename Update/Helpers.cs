@@ -1,70 +1,10 @@
-﻿using System.Runtime.CompilerServices;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using SharedModel.Model;
-using SharedModel.OracleJson;
 
 namespace Update;
 
 public static class Helpers
 {
-    private static readonly List<string> LayoutWhitelist =
-        new()
-        {
-            "normal",
-            "split",
-            "flip",
-            "transform",
-            "modal_dfc",
-            "meld",
-            "leveler",
-            "class",
-            "saga",
-            "adventure",
-            "planar",
-            "scheme",
-        };
-
-    private static readonly List<string> KnownLayouts =
-        new()
-        {
-            "normal",
-            "split",
-            "flip",
-            "transform",
-            "modal_dfc",
-            "meld",
-            "leveler",
-            "class",
-            "saga",
-            "adventure",
-            "planar",
-            "scheme",
-            "vanguard",
-            "token",
-            "double_faced_token",
-            "emblem",
-            "augment",
-            "host",
-            "art_series",
-            "double_sided",
-        };
-
-    public static async IAsyncEnumerable<Card> ConvertData(
-        ILogger logger,
-        IAsyncEnumerable<JsonCard> jsonCards,
-        [EnumeratorCancellation] CancellationToken stoppingToken
-    )
-    {
-        await foreach (var card in jsonCards.WithCancellation(stoppingToken))
-        {
-            if (!KnownLayouts.Contains(card.Layout))
-                logger.LogWarning("Unknown layout '{}", card.Layout);
-            if (!LayoutWhitelist.Contains(card.Layout))
-                continue;
-            yield return DataMapping.FromJson(card);
-        }
-    }
-
     public static async Task BuildCards(
         ProxygenContext context,
         ILogger logger,
@@ -86,26 +26,5 @@ public static class Helpers
         ProxygenContext context,
         ILogger logger,
         CancellationToken stoppingToken
-    )
-    {
-        // Nuke index and rebuild from scratch.
-        context.SanitizedCardNames.RemoveRange(context.SanitizedCardNames.ToList());
-        await context.SaveChangesAsync(stoppingToken);
-
-        // Convert all faces to index entries
-        var entries = context
-            .Cards.AsEnumerable()
-            .Select(c => new { Card = c, Names = Names.CardNames(c) })
-            .SelectMany(p =>
-                p.Names.Select(n => new SanitizedCardName { SanitizedName = n, Card = p.Card })
-            );
-
-        // If multiple cards share a name (see: Everythingamajig) just pick one of them, it's un-cards, we support those on a "if it works it works" basis.
-        var uniqueEntries = entries
-            .GroupBy(i => i.SanitizedName)
-            .Select(g => g.MinBy(i => i.Card.ScryfallId)!);
-
-        await context.SanitizedCardNames.AddRangeAsync(uniqueEntries, stoppingToken);
-        await context.SaveChangesAsync(stoppingToken);
-    }
+    ) { }
 }

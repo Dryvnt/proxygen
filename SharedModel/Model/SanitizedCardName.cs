@@ -1,13 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace SharedModel.Model;
 
-public sealed class SanitizedCardName
+[Index(nameof(Name))]
+[PrimaryKey(nameof(CardId), nameof(Name))]
+public class SanitizedCardName
 {
-    [Key]
     [StringLength(256)]
-    public string SanitizedName { get; init; } = null!;
+    public required string Name { get; init; }
 
-    public int CardId { get; init; }
+    public Guid CardId { get; init; }
     public Card Card { get; init; } = null!;
 }
