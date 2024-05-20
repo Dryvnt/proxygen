@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "name": "C#: Proxygen",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\Proxygen\\Proxygen.csproj",
+            "launchConfigurationId": "TargetFramework=;Proxygen"
+        }
+    ]
+}
