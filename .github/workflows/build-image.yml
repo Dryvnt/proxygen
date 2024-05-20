@@ -1,0 +1,53 @@
+name: build
+
+on:
+  push:
+    branches:
+      - "master"
+
+permissions:
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_TAGS: ${{ github.run_number }}-${{ github.sha }} latest
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      image-path: ${{ steps.push.registry-path }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/metadata-action@v5
+        id: meta
+        with:
+          images: |
+            ${{ env.REGISTRY}}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - uses: docker/setup-qemu-action@v3
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
