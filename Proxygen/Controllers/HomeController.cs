@@ -15,9 +15,11 @@ public class HomeController(ProxygenContext dbContext, IClock clock, CardSearche
     [
         "Snapcaster Mage",
         "2x Ponder",
+        "Dance of the Dead",
+        "Leyline of the Guildpact",
         "2 Stomping Ground",
         "Arcane Proxy",
-        "Dance of the Dead",
+        "Dismember",
         "Jace, the Mind Sculptor",
         "Delver of Secrets",
         "Fire // Ice",
