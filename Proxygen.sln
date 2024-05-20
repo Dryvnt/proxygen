@@ -2,8 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Proxygen", "Proxygen\Proxygen.csproj", "{459B96E0-6514-401A-9C00-F333269EC7EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cli", "Cli\Cli.csproj", "{76DB04A9-B840-45FE-97E7-08AB5000BF8B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{F4922BFA-3FA3-4EC2-9F33-E8DAC25455A7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedModel", "SharedModel\SharedModel.csproj", "{CE282CA2-8C6F-4253-B48F-C966CF074ADC}"
