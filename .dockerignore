@@ -1,0 +1,8 @@
+.vscode
+.idea
+Dockerfile
+.github
+
+artifacts
+
+proxygen.db*

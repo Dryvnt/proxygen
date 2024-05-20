@@ -10,21 +10,6 @@ public class ScryfallFetcher(HttpClient httpClient) : IScryfallFetcher
         [EnumeratorCancellation] CancellationToken cancellationToken = default
     )
     {
-        await using var fs = File.OpenRead(
-            @"C:\Users\dryvn\Downloads\oracle-cards-20240519210215.json"
-        );
-        await foreach (
-            var q in JsonSerializer
-                .DeserializeAsyncEnumerable<ScryfallCard>(fs, cancellationToken: cancellationToken)
-                .OfType<ScryfallCard>()
-                .WithCancellation(cancellationToken)
-        )
-        {
-            yield return q;
-        }
-
-        yield break;
-
         var bulkInformationRaw = await httpClient.GetStreamAsync(
             "https://api.scryfall.com/bulk-data",
             cancellationToken

@@ -37,6 +37,7 @@ public class BackgroundProxygenUpdater(
                 logger.LogError(e, "Unexpected error during background update loop");
                 waitDuration ??= _options.UpdateInterval.ToDuration();
             }
+            logger.LogInformation("Sleeping {} until next update", waitDuration);
             await Task.Delay(waitDuration.Value.ToTimeSpan(), stoppingToken);
         }
     }
