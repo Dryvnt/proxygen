@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,22 +34,20 @@ public sealed class Face
     [StringLength(8)]
     public string? Loyalty { get; init; }
 
-    [NotMapped]
-    public IEnumerable<string> ManaCostComponents
+    public IEnumerable<string> GetManaCostComponents()
     {
-        get
-        {
-            if (ManaCost is null)
-                yield break;
+        if (ManaCost is null)
+            yield break;
 
-            foreach (Match match in Regex.Matches(ManaCost, @"\{.*?\}"))
-            {
-                var part = match.Value;
-                if (part.Length == 3)
-                    yield return part.Trim('{', '}');
-                else
-                    yield return part;
-            }
+        foreach (Match match in Regex.Matches(ManaCost, @"\{.*?\}"))
+        {
+            var part = match.Value;
+            if (part.Length == 3)
+                yield return part.Trim('{', '}');
+            else
+                yield return part;
         }
     }
+
+    public string FormatMana() => string.Join("", GetManaCostComponents());
 }

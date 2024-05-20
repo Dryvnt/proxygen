@@ -1,0 +1,17 @@
+@using Proxygen.ViewModels.Home
+@using SharedModel.Model
+@model SearchViewModel
+@{
+    Layout = "_DisplayLayout";
+    ViewData["Title"] = "Proxygen";
+}
+
+
+@foreach (var (card, amount) in Model.CardAmounts)
+{
+    for (var i = 0; i < amount; i++)
+    {
+        <partial name="_CardPartial" model="card" />
+    }
+
+}

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
+using Proxygen.Services;
 using SharedModel.Model;
 using Update;
 using Update.Options;
@@ -8,7 +9,7 @@ using Update.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddControllersWithViews();
 builder.Services.Configure<RouteOptions>(options =>
 {
     options.LowercaseUrls = true;
@@ -29,6 +30,8 @@ builder.Services.AddSingleton<IClock>(SystemClock.Instance);
 builder.Services.AddScoped<IScryfallFetcher, ScryfallFetcher>();
 builder.Services.AddScoped<IUpdateHandler, UpdateHandler>();
 builder.Services.AddHostedService<BackgroundProxygenUpdater>();
+
+builder.Services.AddScoped<CardSearcher>();
 
 var app = builder.Build();
 
@@ -54,6 +57,6 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapRazorPages();
+app.MapDefaultControllerRoute();
 
 app.Run();

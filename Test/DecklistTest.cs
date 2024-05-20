@@ -27,11 +27,11 @@ public class DecklistTest
 
     [Theory]
     [MemberData(nameof(ExampleDeckLists))]
-    public async Task Basic(string decklist, IEnumerable<(string, int)> expected)
+    public void Basic(string decklist, IEnumerable<(string, int)> expected)
     {
         var parsedExpected = expected.ToDictionary(p => Names.Sanitize(p.Item1), p => p.Item2);
 
-        var parsed = await Parser.ParseDecklist(decklist);
+        var parsed = Parser.ParseDecklist(decklist);
 
         Assert.Equal(parsedExpected, parsed);
     }

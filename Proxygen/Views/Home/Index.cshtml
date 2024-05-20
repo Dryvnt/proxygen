@@ -1,0 +1,12 @@
+@using Proxygen.ViewModels.Home;
+@model IndexViewModel
+@{
+    ViewData["Title"] = "Proxygen";
+}
+
+<h1>Simple Proxy Generator</h1>
+<form method="get" asp-action="Search" class="decklist">
+    <textarea asp-for="Decklist" placeholder="Decklist..." rows="20" required></textarea>
+    <span asp-validation-for="Decklist"></span>
+    <button type="submit">Generate Proxy Sheet</button>
+</form>

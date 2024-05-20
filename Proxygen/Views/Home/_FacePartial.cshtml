@@ -1,0 +1,32 @@
+@using SharedModel.Model
+@model Face
+<div class="name_mana_line">
+    <p class="name">@Model.Name</p>
+    @if (Model.ManaCost is not null)
+    {
+        <div class="mana_cost">
+            <span>@Model.FormatMana()</span>
+        </div>
+    }
+</div>
+@* The art box element is purely to assist the flex layout,
+it is where the art would normally go, so having some space there feels right :) *@
+<div class="art_box"></div>
+<p class="type_line">@Model.TypeLine</p>
+@if (Model.OracleText is not null)
+{
+    <div class="oracle_box">
+        @foreach (var line in Model.OracleText.Split('\n'))
+        {
+            <p class="oracle_p">@line</p>
+        }
+    </div>
+}
+@if (Model.Power is not null || Model.Toughness is not null)
+{
+    <p class="power_toughness">@Model.Power/@Model.Toughness</p>
+}
+@if (Model.Loyalty is not null)
+{
+    <p class="loyalty">@Model.Loyalty</p>
+}

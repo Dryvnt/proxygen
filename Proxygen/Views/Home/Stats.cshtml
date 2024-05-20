@@ -1,6 +1,6 @@
-﻿@page
-@using System.Globalization
-@model Stats
+﻿@using System.Globalization
+@using Proxygen.ViewModels.Home
+@model StatsViewModel
 
 @{
     ViewData["Title"] = "Proxygen";
@@ -11,12 +11,12 @@
         <h1>Request Stats</h1>
         <table style="margin-left: auto; margin-right: auto; min-width: 70%">
             <thead>
-            <tr>
-                <th></th>
-                <th></th>
-                <th>Successful</th>
-                <th>Failed</th>
-            </tr>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th>Successful</th>
+                    <th>Failed</th>
+                </tr>
             </thead>
             <tbody>
                 <tr>

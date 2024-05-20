@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+
+    <title>@ViewData["Title"]</title>
+
+    <link rel=icon" href="./favicon.ico" type="image/x-icon" />
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link href="~/css/site.css" rel="stylesheet" asp-append-version="true" />
+</head>
+
+<body>
+    <main>
+        <article>
+            @RenderBody()
+        </article>
+    </main>
+    <footer>
+        <p>Powered by <a href="https://scryfall.com">Scryfall</a></p>
+        <p>Source code available at <a href="https://github.com/Dryvnt/proxygen">GitHub</a></p>
+    </footer>
+</body>
+
+</html>

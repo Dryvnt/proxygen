@@ -11,7 +11,7 @@ public class ScryfallFetcher(HttpClient httpClient) : IScryfallFetcher
     )
     {
         await using var fs = File.OpenRead(
-            @"C:\Users\dryvn\Downloads\oracle-cards-20240214220202.json"
+            @"C:\Users\dryvn\Downloads\oracle-cards-20240519210215.json"
         );
         await foreach (
             var q in JsonSerializer

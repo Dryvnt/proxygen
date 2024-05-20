@@ -1,0 +1,54 @@
+@using SharedModel.Model
+@model Card
+
+@switch (Model.CardLayout)
+{
+    case CardLayout.Normal:
+        {
+            foreach (var face in Model.Faces)
+            {
+                <div class="card_frame">
+                    <div class="card_inner">
+                        <partial name="_FacePartial" model="face" />
+                    </div>
+                </div>
+            }
+
+            break;
+        }
+    case CardLayout.Split:
+        {
+            <div class="card_frame">
+                @foreach (var face in Model.Faces)
+                {
+                    <div class="card_inner split_inner">
+                        <partial name="_FacePartial" model="face" />
+                    </div>
+                    if (face != Model.Faces.Last())
+                    {
+                        <div class="spacer"></div>
+                        <hr class="flip_divider" />
+                        <div class="spacer"></div>
+                    }
+                }
+            </div>
+            break;
+        }
+    case CardLayout.Flip:
+        {
+            <div class="card_frame">
+                <div class="card_inner flip_top">
+                    <partial name="_FacePartial" model="Model.Faces.First()" />
+                </div>
+                <div class="spacer"></div>
+                <hr class="flip_divider" />
+                <div class="spacer"></div>
+                <div class="card_inner flip_bottom">
+                    <partial name="_FacePartial" model="Model.Faces.Last()" />
+                </div>
+            </div>
+            break;
+        }
+    default:
+        throw new ArgumentOutOfRangeException();
+}
