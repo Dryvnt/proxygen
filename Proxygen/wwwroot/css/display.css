@@ -3,13 +3,18 @@
     size: A4;
 }
 
-* {
-    box-sizing: border-box;
-}
-
 body {
+    display: flex;
+    flex-flow: row wrap;
+    font-size: 3.6mm;
+    font-family: "Manrope", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+
     margin: 0;
 }
+
 
 p {
     margin-top: 0mm;
@@ -17,95 +22,88 @@ p {
 }
 
 .card_frame {
-    /* size of magic card is 63mm x 88mm
-       proxy size is 60mm x 85mm
-       0.5mm border included in this size
-     */
+    /*
+        size of magic card is 63mm x 88mm
+        proxy size is 60mm x 85mm (including border)
+    */
     width: 60mm;
     height: 85mm;
-    max-width: 60mm;
-    max-height: 85mm;
-    min-width: 60mm;
-    min-height: 85mm;
-    padding: 2mm;
+    box-sizing: border-box;
+
     border: 0.5mm solid black;
-    float: left;
-    page-break-inside: avoid;
+
+    padding: 3mm;
     overflow: hidden;
-    font-family: 'Open Sans', sans-serif;
-    font-size: 3.3mm;
-    line-height: 100%;
     text-rendering: geometricPrecision;
+    line-height: 100%;
+
     display: flex;
     flex-flow: column nowrap;
-}
 
-.card_inner {
-    flex-grow: 1;
-    display: flex;
-    flex-flow: column nowrap;
-    max-height: 100%;
-    min-height: 0;
-}
+    page-break-inside: avoid;
 
-.flip_bottom {
-    -ms-transform: rotate(180deg); /* IE 9 */
-    -webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
-    transform: rotate(180deg);
-}
+    .card_inner {
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: space-between;
+        max-height: 100%;
+        min-height: 0;
 
 
-.flip_divider {
-    width: 100%;
-}
+        .name_mana_line {
+            justify-content: space-between;
+            display: flex;
+            font-size: 110%;
 
-.name {
-    display: inline-block;
-    vertical-align: text-top;
-    font-weight: bold;
-    float: left;
-    flex-grow: 1;
-}
+            .name {
+                text-align: left;
 
-.mana_cost {
-    display: inline-block;
-    vertical-align: text-top;
-    text-align: right;
-    float: right;
-}
+                font-weight: bold;
+                word-break: break-word;
+            }
 
-.name_mana_line {
-    flex-basis: fit-content;
-    display: flex;
-}
+            .mana_cost {
+                text-align: right;
 
-.art_box {
-    flex-basis: 50%;
-}
+                span {}
+            }
+        }
 
-.type_line {
-    flex-basis: 3em;
-    font-size: 95%;
-}
+        .art_box {
+            flex-basis: 20mm;
+        }
 
-.oracle_box {
-    flex-basis: 40%;
-}
+        .type_line {
+            font-size: 95%;
+        }
 
-.oracle_p {
-    font-size: 85%;
-}
+        .oracle_box {
+            flex-basis: 50mm;
 
-.power_toughness, .loyalty {
-    flex-basis: fit-content;
-}
+            display: flex;
+            flex-flow: column nowrap;
+            justify-content: space-between;
 
-.power_toughness {
-    text-align: right;
-    margin-top: auto;
-}
+            .oracle_text {
+                font-size: 85%;
+            }
 
-.loyalty {
-    text-align: right;
-    margin-top: auto;
+            .power_toughness,
+            .loyalty {
+                text-align: right;
+                margin-top: auto;
+            }
+        }
+
+    }
+
+    .flip_bottom {
+        transform: rotate(180deg);
+    }
+
+
+    .flip_divider {
+        width: 100%;
+    }
+
 }

@@ -41,11 +41,7 @@ public sealed class Face
 
         foreach (Match match in Regex.Matches(ManaCost, @"\{.*?\}"))
         {
-            var part = match.Value;
-            if (part.Length == 3)
-                yield return part.Trim('{', '}');
-            else
-                yield return part;
+            yield return match.Value.Trim('{', '}');
         }
     }
 
