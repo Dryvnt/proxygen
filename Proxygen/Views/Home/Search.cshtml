@@ -3,9 +3,11 @@
 @model SearchViewModel
 @{
     Layout = "_DisplayLayout";
-    ViewData["Title"] = "Proxygen";
 }
 
+<script>
+    window.addEventListener("load", () => { window.print(); });
+</script>
 
 @foreach (var (card, amount) in Model.CardAmounts)
 {
@@ -13,5 +15,4 @@
     {
         <partial name="_CardPartial" model="card" />
     }
-
 }
