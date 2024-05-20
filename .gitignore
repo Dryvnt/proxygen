@@ -6,5 +6,7 @@ riderModule.iml
 .idea
 Proxygen.sln.DotSettings
 Proxygen.sln.DotSettings.user
+artifacts
+.vscode
 
 proxygen.db*
