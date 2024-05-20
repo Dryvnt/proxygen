@@ -6,26 +6,7 @@
     {
         <div class="mana_cost">
             <span>
-
-                @foreach (var m in Model.GetManaCostComponents())
-                {
-
-                    var parts = m.Split('/');
-                    foreach (var chunk in parts.Chunk(2))
-                    {
-                        if (chunk.Length == 1)
-                        {
-                            <text>@chunk[0]</text>
-                        }
-                        else
-                        {
-                            <text>&nbsp;<sup>@chunk[0]</sup>&frasl;<sub>@chunk[1]</sub></text>
-
-                        }
-                    }
-
-                }
-
+                <partial name="_OraclePartial" model="Model.ManaCost"/>
             </span>
         </div>
     }
@@ -40,7 +21,7 @@ it is where the art would normally go, so having some space there feels right :)
         <div class="oracle_text">
             @foreach (var line in Model.OracleText.Split('\n'))
             {
-                <p>@line</p>
+                <p><partial name="_OraclePartial" model="line"/></p>
             }
         </div>
     }

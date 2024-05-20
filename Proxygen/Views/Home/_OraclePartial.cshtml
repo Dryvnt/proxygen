@@ -1,0 +1,76 @@
+@using System.Text;
+@using System.Text.RegularExpressions
+@model string
+
+@functions {
+    private void RenderWithManaCost(string input)
+    {
+        var idx = 0;
+        foreach (Match match in Regex.Matches(input, @"\{(.*?)\}"))
+        {
+            var segment = @input[idx..match.Index];
+            <text>@segment</text>
+            idx = match.Index + match.Length;
+
+            @foreach (var costChunk in match.Groups[1].Value.Split('/').Chunk(2))
+            {
+                if (costChunk.Length == 1)
+                {
+                    <text>@costChunk[0]</text>
+                }
+                else
+                {
+                    // Note: The leading and tailing spaces are important!
+                    <text> <sup>@costChunk[0]</sup>&frasl;<sub>@costChunk[1]</sub> </text>
+                }
+            }
+        }
+        if (idx != input.Length - 1)
+        {
+            <text>@input[idx..]</text>
+        }
+    }
+
+    private void RenderWithReminderText(string input)
+    {
+        var sb = new StringBuilder();
+        var depth = 0;
+
+        for (var i = 0; i < input.Length; i++)
+        {
+            var c = input[i];
+            switch (c)
+            {
+                case '(' when depth is 0:
+                    RenderWithManaCost(sb.ToString());
+                    sb.Clear();
+                    sb.Append(c);
+                    break;
+                case '(':
+                    depth += 1;
+                    sb.Append(c);
+                    break;
+                case ')' when depth <= 1:
+                    sb.Append(c);
+                    <i>@{
+                            RenderWithManaCost(sb.ToString());
+                        }</i>
+                    sb.Clear();
+                    break;
+                case ')':
+                    depth -= 1;
+                    sb.Append(c);
+                    break;
+                default:
+                    sb.Append(c);
+                    break;
+            }
+        }
+        RenderWithManaCost(sb.ToString());
+    }
+}
+
+
+@{
+    RenderWithReminderText(Model);
+}

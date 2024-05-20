@@ -51,6 +51,7 @@ p {
 
 
         .name_mana_line {
+            flex-basis: 7mm;
             justify-content: space-between;
             display: flex;
             font-size: 110%;
@@ -64,21 +65,22 @@ p {
 
             .mana_cost {
                 text-align: right;
-
-                span {}
+                white-space: nowrap;
             }
         }
 
         .art_box {
             flex-basis: 20mm;
+            flex-shrink: 1;
         }
 
         .type_line {
+            flex-basis: 6mm;
             font-size: 95%;
         }
 
         .oracle_box {
-            flex-basis: 50mm;
+            flex-basis: 44mm;
 
             display: flex;
             flex-flow: column nowrap;
@@ -88,11 +90,12 @@ p {
                 font-size: 85%;
             }
 
+
             .power_toughness,
             .loyalty {
                 text-align: right;
-                margin-top: auto;
             }
+
         }
 
     }
