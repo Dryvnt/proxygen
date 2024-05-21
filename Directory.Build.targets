@@ -1,6 +1,6 @@
 <Project>
     <!-- See https://aka.ms/dotnet/msbuild/customize for more details on customizing your build -->
     <ItemGroup>
-        <PackageReference Include="CSharpier.MsBuild" Version="0.27.2"/>
+        <PackageReference Include="CSharpier.MsBuild" Version="0.28.2"/>
     </ItemGroup>
 </Project>
