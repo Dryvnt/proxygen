@@ -47,15 +47,20 @@ public class HomeController(ProxygenContext dbContext, IClock clock, CardSearche
         CancellationToken cancellationToken
     )
     {
+        var searchResult = await cardSearcher.SearchAsync(model.Decklist, cancellationToken);
+
+        foreach (var unrecognizedCard in searchResult.UnrecognizedFaces)
+        {
+            ModelState.AddModelError(
+                nameof(IndexViewModel.Decklist),
+                $"Unknown card: {unrecognizedCard}"
+            );
+        }
+
         if (!ModelState.IsValid)
         {
             return View("Index", model);
         }
-
-        var searchResult = await cardSearcher.SearchAsync(model.Decklist, cancellationToken);
-
-        if (searchResult.UnrecognizedFaces.Count > 0)
-            throw new NotImplementedException();
 
         return View("Search", new SearchViewModel { CardAmounts = searchResult.CardAmounts });
     }

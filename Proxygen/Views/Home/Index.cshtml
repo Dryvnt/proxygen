@@ -4,6 +4,6 @@
 <h1>Simple Proxy Generator</h1>
 <form method="get" asp-action="Search" class="decklist">
     <textarea asp-for="Decklist" placeholder="Decklist..." rows="20" required></textarea>
-    <span asp-validation-for="Decklist"></span>
+    <div asp-validation-summary="All"></div>
     <button type="submit">Generate Proxy Sheet</button>
 </form>
