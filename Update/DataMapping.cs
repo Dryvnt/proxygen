@@ -117,7 +117,7 @@ public static class DataMapping
         var sanitizedNames = names
             .Select(Names.Sanitize)
             .Distinct()
-            .Select(n => new SanitizedCardName { Name = n, })
+            .Select(n => new SanitizedCardName { Name = n, CardId = scryfallCard.Id })
             .ToList();
 
         return new Card
