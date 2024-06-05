@@ -18,8 +18,13 @@ builder.Services.Configure<RouteOptions>(options =>
 
 var connectionString = builder.Configuration.GetConnectionString("Database");
 builder.Services.AddDbContext<ProxygenContext>(options =>
-    options.UseSqlite(connectionString, x => x.UseNodaTime())
-);
+{
+    options.UseSqlite(connectionString, x => x.UseNodaTime());
+    if (builder.Environment.IsDevelopment())
+    {
+        options.EnableSensitiveDataLogging();
+    }
+});
 
 builder.Services.Configure<ProxygenUpdaterOptions>(
     builder.Configuration.GetSection(ProxygenUpdaterOptions.ProxygenUpdater)
