@@ -49,6 +49,7 @@ public class UpdateHandler(
     {
         var oldDigests = await db
             .Cards.Select(c => new { ScryfallId = c.Id, c.SourceDigest, })
+            .AsNoTracking()
             .ToDictionaryAsync(t => t.ScryfallId, t => t.SourceDigest, cancellationToken);
         var unhandled = oldDigests.Keys.ToHashSet();
 
@@ -111,7 +112,14 @@ public class UpdateHandler(
         }
         finally
         {
-            await db.SaveChangesAsync(cancellationToken);
+            try
+            {
+                await db.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Failed to save update changes");
+            }
             logger.LogInformation("Finished card data update (status {})", update.StatusState);
         }
     }
