@@ -30,11 +30,15 @@ builder.Services.Configure<ProxygenUpdaterOptions>(
     builder.Configuration.GetSection(ProxygenUpdaterOptions.ProxygenUpdater)
 );
 
-builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IClock>(SystemClock.Instance);
 builder.Services.AddScoped<IScryfallFetcher, ScryfallFetcher>();
 builder.Services.AddScoped<IUpdateHandler, UpdateHandler>();
 builder.Services.AddHostedService<BackgroundProxygenUpdater>();
+builder.Services.AddHttpClient<IScryfallFetcher, ScryfallFetcher>(client =>
+{
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("Proxygen/1.0");
+    client.DefaultRequestHeaders.Accept.ParseAdd("application/json;q=0.9,*/*;q=0.8");
+});
 
 builder.Services.AddScoped<CardSearcher>();
 
