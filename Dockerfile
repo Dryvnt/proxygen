@@ -18,7 +18,7 @@ RUN dotnet restore -a $TARGETARCH
 COPY . .
 RUN dotnet publish Proxygen -a $TARGETARCH --no-restore -c Release -o /out
 
-FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/aspnet:8.0
+FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/aspnet:9.0
 LABEL org.opencontainers.image.source=https://github.com/dryvnt/proxygen
 
 COPY --from=build-env /out /app
