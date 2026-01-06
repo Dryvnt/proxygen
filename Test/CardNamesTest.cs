@@ -20,8 +20,8 @@ public class CardNamesTest
             Name = "Foobar",
             Faces = new List<Face>
             {
-                new() { Name = "Foo", CardId = cardId, },
-                new() { Name = "Bar", CardId = cardId, },
+                new() { Name = "Foo", CardId = cardId },
+                new() { Name = "Bar", CardId = cardId },
             },
             SanitizedNames = null!,
             SourceDigest = 0,

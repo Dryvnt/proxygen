@@ -40,5 +40,5 @@ public static partial class Parser
     [GeneratedRegex(@"^(([0-9]+)x?)?([a-zA-Z0-9\s]+)$", RegexOptions.Compiled)]
     private static partial Regex CardLineRegex();
 
-    private static readonly string[] NewlineSeperator = ["\r\n", "\n", "\r",];
+    private static readonly string[] NewlineSeperator = ["\r\n", "\n", "\r"];
 }

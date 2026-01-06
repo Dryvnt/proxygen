@@ -4,7 +4,7 @@ namespace Update;
 
 public static class Names
 {
-    private static readonly HashSet<char> KeepChar = [' ', '/', ',', '\'', '-',];
+    private static readonly HashSet<char> KeepChar = [' ', '/', ',', '\'', '-'];
 
     public static string Sanitize(string name)
     {

@@ -48,7 +48,7 @@ public class UpdateHandler(
     )
     {
         var oldDigests = await db
-            .Cards.Select(c => new { ScryfallId = c.Id, c.SourceDigest, })
+            .Cards.Select(c => new { ScryfallId = c.Id, c.SourceDigest })
             .AsNoTracking()
             .ToDictionaryAsync(t => t.ScryfallId, t => t.SourceDigest, cancellationToken);
         var unhandled = oldDigests.Keys.ToHashSet();

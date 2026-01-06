@@ -19,7 +19,7 @@ public class CardSearcher(ProxygenContext db, IClock clock)
         // Fetch cards from DB
         var cardsByName = await db
             .SanitizedCardNames.Include(i => i.Card)
-            .ThenInclude(c => c.Faces)
+                .ThenInclude(c => c.Faces)
             .Where(s => names.Contains(s.Name))
             .GroupBy(s => s.Name)
             .ToArrayAsync(cancellationToken);

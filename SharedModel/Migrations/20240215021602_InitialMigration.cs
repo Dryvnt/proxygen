@@ -19,7 +19,7 @@ namespace SharedModel.Migrations
                     Name = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
                     CardLayout = table.Column<int>(type: "INTEGER", nullable: false),
                     IsFunny = table.Column<bool>(type: "INTEGER", nullable: false),
-                    SourceDigest = table.Column<ulong>(type: "INTEGER", nullable: false)
+                    SourceDigest = table.Column<ulong>(type: "INTEGER", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -35,7 +35,7 @@ namespace SharedModel.Migrations
                         .Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     When = table.Column<string>(type: "TEXT", nullable: false),
-                    UnrecognizedCards = table.Column<string>(type: "TEXT", nullable: false)
+                    UnrecognizedCards = table.Column<string>(type: "TEXT", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -51,7 +51,7 @@ namespace SharedModel.Migrations
                         .Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Created = table.Column<string>(type: "TEXT", nullable: false),
-                    StatusState = table.Column<int>(type: "INTEGER", nullable: false)
+                    StatusState = table.Column<int>(type: "INTEGER", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -74,7 +74,7 @@ namespace SharedModel.Migrations
                     ManaCost = table.Column<string>(type: "TEXT", maxLength: 64, nullable: true),
                     Power = table.Column<string>(type: "TEXT", maxLength: 8, nullable: true),
                     Toughness = table.Column<string>(type: "TEXT", maxLength: 8, nullable: true),
-                    Loyalty = table.Column<string>(type: "TEXT", maxLength: 8, nullable: true)
+                    Loyalty = table.Column<string>(type: "TEXT", maxLength: 8, nullable: true),
                 },
                 constraints: table =>
                 {
@@ -94,7 +94,7 @@ namespace SharedModel.Migrations
                 columns: table => new
                 {
                     Name = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
-                    CardId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    CardId = table.Column<Guid>(type: "TEXT", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -114,7 +114,7 @@ namespace SharedModel.Migrations
                 columns: table => new
                 {
                     CardsId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    SearchRecordsId = table.Column<int>(type: "INTEGER", nullable: false)
+                    SearchRecordsId = table.Column<int>(type: "INTEGER", nullable: false),
                 },
                 constraints: table =>
                 {

@@ -114,7 +114,7 @@ public class HomeController(ProxygenContext dbContext, IClock clock, CardSearche
             {
                 LastSevenDays = LastSevenDays,
                 LastTwentyFourHours = LastTwentyFourHours,
-                LastSevenUpdates = LastSevenUpdates
+                LastSevenUpdates = LastSevenUpdates,
             }
         );
     }
