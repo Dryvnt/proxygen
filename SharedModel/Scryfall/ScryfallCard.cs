@@ -3,7 +3,7 @@
 namespace SharedModel.Scryfall;
 
 public sealed record ScryfallCard(
-    [property: JsonPropertyName("id")] Guid Id,
+    [property: JsonPropertyName("oracle_id")] Guid OracleId,
     [property: JsonPropertyName("name")] string Name,
     [property: JsonPropertyName("type_line")] string TypeLine,
     [property: JsonPropertyName("layout")] string Layout,

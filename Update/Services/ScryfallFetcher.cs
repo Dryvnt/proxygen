@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.IO.Compression;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using SharedModel.Scryfall;
 
@@ -24,12 +25,15 @@ public class ScryfallFetcher(HttpClient httpClient) : IScryfallFetcher
 
         var oracleInformation = bulkInformationWrapper.Bulks.First(i => i.Type == "oracle_cards");
 
-        var oracleRaw = await httpClient.GetStreamAsync(
-            oracleInformation.DownloadUri,
+        // Bulk files are gzip-compressed JSON Lines (one card object per line)
+        await using var oracleRaw = await httpClient.GetStreamAsync(
+            oracleInformation.JsonlDownloadUri,
             cancellationToken
         );
+        await using var oracleDecompressed = new GZipStream(oracleRaw, CompressionMode.Decompress);
         var jsonStream = JsonSerializer.DeserializeAsyncEnumerable<ScryfallCard>(
-            oracleRaw,
+            oracleDecompressed,
+            topLevelValues: true,
             cancellationToken: cancellationToken
         );
 

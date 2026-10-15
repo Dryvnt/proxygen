@@ -18,6 +18,7 @@ public static class DataMapping
         "augment",
         "host",
         "art_series",
+        "front_card",
     };
     private static readonly IReadOnlyDictionary<string, CardLayout> CardLayoutMapping =
         new Dictionary<string, CardLayout>()
@@ -37,6 +38,7 @@ public static class DataMapping
             ["prototype"] = CardLayout.Normal,
             ["split"] = CardLayout.Split,
             ["adventure"] = CardLayout.Split,
+            ["prepare"] = CardLayout.Split,
             ["flip"] = CardLayout.Flip,
         };
 
@@ -85,7 +87,7 @@ public static class DataMapping
             faces.AddRange(
                 scryfallCard.Faces.Select(face => new Face
                 {
-                    CardId = scryfallCard.Id,
+                    CardId = scryfallCard.OracleId,
                     Name = face.Name,
                     OracleText = face.OracleText,
                     TypeLine = face.TypeLine,
@@ -101,7 +103,7 @@ public static class DataMapping
             faces.Add(
                 new Face
                 {
-                    CardId = scryfallCard.Id,
+                    CardId = scryfallCard.OracleId,
                     Name = scryfallCard.Name,
                     OracleText = scryfallCard.OracleText,
                     TypeLine = scryfallCard.TypeLine,
@@ -117,12 +119,12 @@ public static class DataMapping
         var sanitizedNames = names
             .Select(Names.Sanitize)
             .Distinct()
-            .Select(n => new SanitizedCardName { Name = n, CardId = scryfallCard.Id })
+            .Select(n => new SanitizedCardName { Name = n, CardId = scryfallCard.OracleId })
             .ToList();
 
         return new Card
         {
-            Id = scryfallCard.Id,
+            Id = scryfallCard.OracleId,
             Name = scryfallCard.Name,
             CardLayout = layout,
             Faces = faces,

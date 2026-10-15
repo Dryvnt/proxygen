@@ -52,6 +52,7 @@ public class UpdateHandler(
             .AsNoTracking()
             .ToDictionaryAsync(t => t.ScryfallId, t => t.SourceDigest, cancellationToken);
         var unhandled = oldDigests.Keys.ToHashSet();
+        var changed = new List<Card>();
 
         await foreach (var card in cards.WithCancellation(cancellationToken))
         {
@@ -67,13 +68,32 @@ public class UpdateHandler(
                 continue;
             }
 
-            db.Cards.Update(card);
+            changed.Add(card);
+        }
+
+        // Faces and sanitized names are keyed by name, which can change between updates.
+        // Replace them wholesale instead of updating; the card row itself is kept so its
+        // search record links survive.
+        var changedIds = changed.Select(c => c.Id).ToHashSet();
+        await db.Set<Face>()
+            .Where(f => changedIds.Contains(f.CardId))
+            .ExecuteDeleteAsync(cancellationToken);
+        await db
+            .SanitizedCardNames.Where(n => changedIds.Contains(n.CardId))
+            .ExecuteDeleteAsync(cancellationToken);
+        foreach (var card in changed)
+        {
+            db.Entry(card).State = EntityState.Modified;
+            await db.AddRangeAsync(card.Faces, cancellationToken);
+            await db.AddRangeAsync(card.SanitizedNames, cancellationToken);
         }
 
         // id is unhandled: card is not present in oracle data and should be deleted
         await db
             .Cards.Where(c => unhandled.Contains(c.Id))
             .ExecuteDeleteAsync(cancellationToken: cancellationToken);
+
+        await db.SaveChangesAsync(cancellationToken);
     }
 
     private async Task PerformUpdate(CancellationToken cancellationToken)
@@ -99,29 +119,31 @@ public class UpdateHandler(
                 var transaction = await db.Database.BeginTransactionAsync(cancellationToken)
             )
             {
+                // Status is saved together with the card changes, so both commit or neither does
+                update.StatusState = UpdateStatusState.Success;
                 await PerformUpdateInner(cardData, cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
             }
-
-            update.StatusState = UpdateStatusState.Success;
         }
         catch (Exception e)
         {
             logger.LogError(e, "card data update failed");
+
+            // Drop pending card changes so only the failure status is saved
+            db.ChangeTracker.Clear();
             update.StatusState = UpdateStatusState.Failure;
-        }
-        finally
-        {
+            db.UpdateStatuses.Update(update);
             try
             {
                 await db.SaveChangesAsync(cancellationToken);
             }
-            catch (Exception e)
+            catch (Exception saveException)
             {
-                logger.LogError(e, "Failed to save update changes");
+                logger.LogError(saveException, "Failed to save update failure status");
             }
-            logger.LogInformation("Finished card data update (status {})", update.StatusState);
         }
+
+        logger.LogInformation("Finished card data update (status {})", update.StatusState);
     }
 
     public async Task<Duration> HandleUpdateAsync(CancellationToken cancellationToken = default)

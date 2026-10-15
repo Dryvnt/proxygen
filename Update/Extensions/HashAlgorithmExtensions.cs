@@ -11,7 +11,7 @@ public static class HashAlgorithmExtensions
         ScryfallCard card
     )
     {
-        hashAlgorithm.Append(card.Id.ToByteArray());
+        hashAlgorithm.Append(card.OracleId.ToByteArray());
         hashAlgorithm.Append(Encoding.UTF8.GetBytes(card.Name));
         hashAlgorithm.Append(Encoding.UTF8.GetBytes(card.TypeLine));
         hashAlgorithm.Append(Encoding.UTF8.GetBytes(card.Layout));

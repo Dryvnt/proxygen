@@ -4,5 +4,5 @@ namespace SharedModel.Scryfall;
 
 public sealed record ScryfallBulk(
     [property: JsonPropertyName("type")] string Type,
-    [property: JsonPropertyName("download_uri")] Uri DownloadUri
+    [property: JsonPropertyName("jsonl_download_uri")] Uri JsonlDownloadUri
 );
